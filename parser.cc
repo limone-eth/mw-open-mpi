@@ -6,9 +6,11 @@
 #include <iterator>     // ostream_operator
 #include <boost/tokenizer.hpp>
 
+using namespace std;
+vector<string> headers;
+
 int main()
 {
-    using namespace std;
     using namespace boost;
     string data("./sample.csv");
 
@@ -17,7 +19,6 @@ int main()
 
     typedef tokenizer< escaped_list_separator<char> > Tokenizer;
     vector< vector<string> > table;
-    vector<string> headers;
     string line;
 
     while (getline(in,line))
@@ -36,4 +37,8 @@ int main()
             table.push_back(vec);
     }
     in.close();
+}
+
+int colIndex(string col){
+    return find(headers.begin(), headers.end(), col) - headers.begin();
 }

@@ -41,7 +41,7 @@ class CarAccident {
         string factor_5;
         int unique_key;
 
-        int week_of_year
+        int week_of_year;
 } car_accident;
 
 class Query1 {

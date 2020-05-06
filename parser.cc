@@ -16,38 +16,159 @@ int colIndex(string col) {
 }
 
 class CarAccident {
-    public:
-        string date;
-        string time;
-        string zip_code;
-        string lat;
-        string lng;
-        string location;
-        string on_street_name;
-        string cross_street_name;
-        string off_street_name;
-        int number_of_persons_injured;
-        int number_of_persons_killed;
-        int number_of_pedestrians_injured;
-        int number_of_pedestrians_killed;
-        int number_of_cyclist_injured;
-        int number_of_cyclist_killed;
-        int number_of_motorist_injured;
-        int number_of_motorist_killed;
-        string factor_1;
-        string factor_2;
-        string factor_3;
-        string factor_4;
-        string factor_5;
-        int unique_key;
+public:
+    string date;
+    string time;
+    string borough;
+    string zip_code;
+    string lat;
+    string lng;
+    string location;
+    string on_street_name;
+    string cross_street_name;
+    string off_street_name;
+    int number_of_persons_injured;
+    int number_of_persons_killed;
+    int number_of_pedestrians_injured;
+    int number_of_pedestrians_killed;
+    int number_of_cyclist_injured;
+    int number_of_cyclist_killed;
+    int number_of_motorist_injured;
+    int number_of_motorist_killed;
+    string factor_1;
+    string factor_2;
+    string factor_3;
+    string factor_4;
+    string factor_5;
+    int unique_key;
 
-        int week_of_year;
+    int week_of_year;
 } car_accident;
 
-class Query1 {
-    int week_of_year;
-    int lethal_accidents_num;
+class Query2 {
+    public:
+        int total_accidents;
+        int lethal_accidents;
+        float lethal_percentage;
 };
+
+bool in_array(const std::string &value, const std::vector<string> &array) {
+    return std::find(array.begin(), array.end(), value) != array.end();
+}
+
+std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
+    std::map<int, int> query_results;
+    for (long unsigned int i = 0; i < car_accidents.size(); i++) {
+        if (query_results.count(car_accidents[i].week_of_year) == false) {
+            query_results[car_accidents[i].week_of_year] = car_accidents[i].number_of_persons_killed;
+        } else {
+            query_results[car_accidents[i].week_of_year] += car_accidents[i].number_of_persons_killed;
+        }
+    }
+    cout << "----- QUERY 1 -----" << endl;
+    for (const auto&[k, v] : query_results)
+        std::cout << "week[" << k << "] = total_lethal_accidents(" << v << ") " << std::endl;
+    cout << "-------------------" << endl;
+    return query_results;
+}
+
+std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
+    std::map<string, Query2> query_results;
+    for (long unsigned int i = 0; i < car_accidents.size(); i++) {
+        vector<string> already_processed_factors;
+        // CHECK FACTOR 1
+        if (car_accidents[i].factor_1 != ""){
+            already_processed_factors.push_back(car_accidents[i].factor_1);
+            if (query_results.count(car_accidents[i].factor_1) == false) {
+                query_results[car_accidents[i].factor_1].total_accidents = 1;
+                query_results[car_accidents[i].factor_1].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_1].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_1].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_1].total_accidents;
+            } else {
+                query_results[car_accidents[i].factor_1].total_accidents += 1;
+                query_results[car_accidents[i].factor_1].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_1].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_1].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_1].total_accidents;
+            }
+        }
+        // CHECK FACTOR 2
+        if (!in_array(car_accidents[i].factor_2, already_processed_factors) && car_accidents[i].factor_2 != "") {
+            already_processed_factors.push_back(car_accidents[i].factor_2);
+            if (query_results.count(car_accidents[i].factor_2) == false) {
+                query_results[car_accidents[i].factor_2].total_accidents = 1;
+                query_results[car_accidents[i].factor_2].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_2].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_2].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_2].total_accidents;
+            } else {
+                query_results[car_accidents[i].factor_2].total_accidents += 1;
+                query_results[car_accidents[i].factor_2].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_2].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_2].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_2].total_accidents;
+            }
+        }
+        // CHECK FACTOR 3
+        if (!in_array(car_accidents[i].factor_3, already_processed_factors) && car_accidents[i].factor_3 != "") {
+            already_processed_factors.push_back(car_accidents[i].factor_3);
+            if (query_results.count(car_accidents[i].factor_3) == false) {
+                query_results[car_accidents[i].factor_3].total_accidents = 1;
+                query_results[car_accidents[i].factor_3].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_3].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_3].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_3].total_accidents;
+            } else {
+                query_results[car_accidents[i].factor_3].total_accidents += 1;
+                query_results[car_accidents[i].factor_3].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_3].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_3].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_3].total_accidents;
+            }
+        }
+        // CHECK FACTOR 4
+        if (!in_array(car_accidents[i].factor_4, already_processed_factors) && car_accidents[i].factor_4 != "") {
+            already_processed_factors.push_back(car_accidents[i].factor_4);
+            if (query_results.count(car_accidents[i].factor_4) == false) {
+                query_results[car_accidents[i].factor_4].total_accidents = 1;
+                query_results[car_accidents[i].factor_4].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_4].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_4].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_4].total_accidents;
+            } else {
+                query_results[car_accidents[i].factor_4].total_accidents += 1;
+                query_results[car_accidents[i].factor_4].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_4].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_4].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_4].total_accidents;
+            }
+        }
+        // CHECK FACTOR 5
+        if (!in_array(car_accidents[i].factor_5, already_processed_factors) && car_accidents[i].factor_5 != "") {
+            already_processed_factors.push_back(car_accidents[i].factor_5);
+            if (query_results.count(car_accidents[i].factor_5) == false) {
+                query_results[car_accidents[i].factor_5].total_accidents = 1;
+                query_results[car_accidents[i].factor_5].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_5].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_5].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_5].total_accidents;
+            } else {
+                query_results[car_accidents[i].factor_5].total_accidents += 1;
+                query_results[car_accidents[i].factor_5].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_5].lethal_percentage =
+                        (float)query_results[car_accidents[i].factor_5].lethal_accidents /
+                                (float)query_results[car_accidents[i].factor_5].total_accidents;
+            }
+        }
+
+    }
+    cout << "----- QUERY 2 -----" << endl;
+    for (const auto&[k, v] : query_results)
+        std::cout << "factor[" << k << "] = total_accidents(" << v.total_accidents << ") | lethal_accidents(" << v.lethal_accidents << ") | lethal_percentage(" << v.lethal_percentage << ") "<< std::endl;
+    cout << "-------------------" << endl;
+    return query_results;
+}
 
 int main() {
     using namespace boost;
@@ -80,42 +201,37 @@ int main() {
     vector<string>::iterator i;
 
     vector<CarAccident> car_accidents;
-    for (long unsigned int j = 0; j < table.size(); j++) {
-        // cout << (*(*it).begin()) << endl;
-        for (long unsigned int i = 0; i < table[j].size(); i++){
-            CarAccident c;
-            c.date = table[j][0];
-            c.time = table[j][1];
-            c.zip_code = table[j][2];
-            c.lat = table[j][3];
-            c.lng = table[j][4];
-            c.location = table[j][5];
-            c.on_street_name = table[j][6];
-            c.cross_street_name = table[j][7];
-            c.off_street_name = table[j][8];
-            c.number_of_persons_injured = std::atoi(table[j][9].c_str());
-            c.number_of_persons_killed = std::atoi(table[j][10].c_str());
-            c.number_of_pedestrians_injured = std::atoi(table[j][11].c_str());
-            c.number_of_pedestrians_killed = std::atoi(table[j][12].c_str());
-            c.number_of_cyclist_injured = std::atoi(table[j][13].c_str());
-            c.number_of_cyclist_killed = std::atoi(table[j][14].c_str());
-            c.number_of_motorist_injured = std::atoi(table[j][15].c_str());
-            c.number_of_motorist_killed = std::atoi(table[j][16].c_str());
-            c.factor_1 = table[j][17];
-            c.factor_2 = table[j][18];
-            c.factor_3 = table[j][19];
-            c.factor_4 = table[j][20];
-            c.factor_5 = table[j][21];
-            c.unique_key = std::atoi(table[j][22].c_str());
-            car_accidents.push_back(c);
-        }
-        // cout << "\n----------------------" << endl;
+
+    for (long unsigned int i = 0; i < table.size(); i++) {
+        CarAccident c;
+        c.date = table[i][0];
+        c.time = table[i][1];
+        c.borough = table[i][2];
+        c.zip_code = table[i][3];
+        c.lat = table[i][4];
+        c.lng = table[i][5];
+        c.location = table[i][6];
+        c.on_street_name = table[i][7];
+        c.cross_street_name = table[i][8];
+        c.off_street_name = table[i][9];
+        c.number_of_persons_injured = std::atoi(table[i][10].c_str());
+        c.number_of_persons_killed = std::atoi(table[i][11].c_str());
+        c.number_of_pedestrians_injured = std::atoi(table[i][12].c_str());
+        c.number_of_pedestrians_killed = std::atoi(table[i][13].c_str());
+        c.number_of_cyclist_injured = std::atoi(table[i][14].c_str());
+        c.number_of_cyclist_killed = std::atoi(table[i][15].c_str());
+        c.number_of_motorist_injured = std::atoi(table[i][16].c_str());
+        c.number_of_motorist_killed = std::atoi(table[i][17].c_str());
+        c.factor_1 = table[i][18];
+        c.factor_2 = table[i][19];
+        c.factor_3 = table[i][20];
+        c.factor_4 = table[i][21];
+        c.factor_5 = table[i][22];
+        c.unique_key = std::atoi(table[i][23].c_str());
+        car_accidents.push_back(c);
     }
 
-    vector<Query1> query_1_results;
-
-    for (long unsigned int i = 0; i < car_accidents.size(); i++){
-        cout << car_accidents[i].date << endl;
+    for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         string formatted_date;
         std::string delimiter = "/";
         size_t pos = 0;
@@ -130,11 +246,17 @@ int main() {
         short unsigned int year = std::atoi(split[2].c_str());
         short unsigned int month = std::atoi(split[0].c_str());
         short unsigned int day = std::atoi(split[1].c_str());
-        boost::gregorian::date d {year, month, day};
+        boost::gregorian::date d{year, month, day};
         int week_of_year = d.week_number();
         car_accidents[i].week_of_year = week_of_year;
-        cout << week_of_year << endl;
-        cout << "\n----------------------" << endl;
     }
+
+    // ---- QUERY 1 ------
+    std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
+
+    // ---- QUERY 2 ------
+    std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
 }
+
+
 

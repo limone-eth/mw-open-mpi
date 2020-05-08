@@ -65,7 +65,7 @@ class Query3{
         int week;
         int total_accidents;
         int lethal_accidents;
-        int lethal_average;
+        float lethal_average;
 
 };
 

@@ -4,7 +4,7 @@ C_OMP = -fopenmp
 CC=gcc-9
 CXX=g++-9
 CLANG=clang
-CXXFLAGS = -march=native -mtune=native -ftree-vectorize -Ofast -std=c++11 -Wall $(DEBUG) -I /usr/local/include -lboost_date_time -lboost_thread -lpthread
+CXXFLAGS = -march=native -mtune=native -ftree-vectorize -Ofast -std=c++17 -Wall $(DEBUG) -I /usr/local/include -lboost_date_time -lboost_thread -lpthread
 
 
 

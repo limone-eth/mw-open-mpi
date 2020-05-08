@@ -7,12 +7,19 @@
 #include <boost/tokenizer.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <time.h>
+#include "boost/date_time/gregorian/gregorian.hpp"
 
 using namespace std;
 vector<string> headers;
 
 int colIndex(string col) {
     return find(headers.begin(), headers.end(), col) - headers.begin();
+}
+
+ostream& operator<<(ostream& os, const std::pair<std::string, int>& p)
+{
+    os << p.first << ' ' << p.second << ' ';
+    return os;
 }
 
 class CarAccident {
@@ -50,6 +57,16 @@ class Query2 {
         int total_accidents;
         int lethal_accidents;
         float lethal_percentage;
+};
+
+class Query3{
+    public:
+        std::string borough; 
+        int week;
+        int total_accidents;
+        int lethal_accidents;
+        int lethal_average;
+
 };
 
 bool in_array(const std::string &value, const std::vector<string> &array) {
@@ -170,6 +187,36 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
     return query_results;
 }
 
+std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident> car_accidents){
+    std::map<std::pair<std::string, int>, Query3> query_results;
+    for (long unsigned int i = 0; i < car_accidents.size(); i++) {
+        std::vector<std::pair<std::string, int>> boroughs_weeks;
+        if (car_accidents[i].borough != ""){
+            std::pair<std::string, int> b_w = std::make_pair(car_accidents[i].borough, car_accidents[i].week_of_year);
+            boroughs_weeks.push_back(b_w);
+            if (query_results.count(b_w) == false) {
+                query_results[b_w].total_accidents = 1;
+                query_results[b_w].week = car_accidents[i].week_of_year;
+                query_results[b_w].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[b_w].lethal_average =
+                        (float)query_results[b_w].lethal_accidents /
+                                (float)query_results[b_w].total_accidents;
+            } else {
+                query_results[b_w].total_accidents += 1;
+                query_results[b_w].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[b_w].lethal_average =
+                        (float)query_results[b_w].lethal_accidents /
+                                (float)query_results[b_w].total_accidents;
+            }
+        }
+    }
+    cout << "----- QUERY 3 -----" << endl;
+    for (const auto&[k, v] : query_results)
+        std::cout << "Borough[" << k << "] = total_accidents(" << v.total_accidents << ") | lethal_accidents(" << v.lethal_accidents << ") | average_lethal(" << v.lethal_average << ") "<< std::endl;
+    cout << "-------------------" << endl;
+    return query_results;
+}
+
 int main() {
     using namespace boost;
     using namespace boost::gregorian;
@@ -256,6 +303,9 @@ int main() {
 
     // ---- QUERY 2 ------
     std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
+
+    //---- QUERY 3 ------
+    std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
 }
 
 

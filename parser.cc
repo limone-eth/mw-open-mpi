@@ -8,6 +8,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <time.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
+#include <omp.h>
 
 using namespace std;
 vector<string> headers;
@@ -75,6 +76,7 @@ bool in_array(const std::string &value, const std::vector<string> &array) {
 
 std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     std::map<int, int> query_results;
+    #pragma omp parallel for num_threads(4)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         if (query_results.count(car_accidents[i].week_of_year) == false) {
             query_results[car_accidents[i].week_of_year] = car_accidents[i].number_of_persons_killed;
@@ -82,6 +84,8 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
             query_results[car_accidents[i].week_of_year] += car_accidents[i].number_of_persons_killed;
         }
     }
+    //#pragma omp barrier
+
     cout << "----- QUERY 1 -----" << endl;
     for (const auto&[k, v] : query_results)
         std::cout << "week[" << k << "] = total_lethal_accidents(" << v << ") " << std::endl;

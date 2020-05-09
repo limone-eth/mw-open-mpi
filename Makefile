@@ -5,7 +5,7 @@ CC=gcc-9
 CXX=g++-9
 CLANG=clang
 CXXFLAGS = -march=native -mtune=native -ftree-vectorize -Ofast -std=c++17 -Wall $(DEBUG) -I /usr/local/include -lboost_date_time -lboost_thread -lpthread
-
+LDFLAGS='-fopenmp -o
 
 
 LIBS = 
@@ -21,5 +21,5 @@ parser.o:
 	$(CXX) $(CXXFLAGS) $(C_OMP) -c parser.cc -o parser.o
 
 parser: parser.o
-	$(CXX) -o parser parser.o
+	$(CXX) $(C_OMP) -o parser parser.o
 

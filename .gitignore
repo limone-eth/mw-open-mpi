@@ -2,3 +2,4 @@
 *.csv
 /build
 parser*
+NYPD_Motor_Vehicle_Collisions.csv

@@ -13,6 +13,9 @@
 using namespace std;
 vector<string> headers;
 
+int NUM_THREADS = 16;
+string CSV_FILE = "./NYPD_Motor_Vehicle_Collisions.csv";
+
 int colIndex(string col) {
     return find(headers.begin(), headers.end(), col) - headers.begin();
 }
@@ -62,7 +65,7 @@ class Query2 {
 
 class Query3{
     public:
-        std::string borough; 
+        std::string borough;
         int week;
         int total_accidents;
         int lethal_accidents;
@@ -76,7 +79,9 @@ bool in_array(const std::string &value, const std::vector<string> &array) {
 
 std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     std::map<int, int> query_results;
-    #pragma omp parallel for num_threads(4)
+    omp_set_num_threads(NUM_THREADS);
+    int chunkSize = car_accidents.size()/omp_get_max_threads();
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         if (query_results.count(car_accidents[i].week_of_year) == false) {
             query_results[car_accidents[i].week_of_year] = car_accidents[i].number_of_persons_killed;
@@ -95,6 +100,9 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
 
 std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
     std::map<string, Query2> query_results;
+    omp_set_num_threads(NUM_THREADS);
+    int chunkSize = car_accidents.size()/omp_get_max_threads();
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         vector<string> already_processed_factors;
         // CHECK FACTOR 1
@@ -193,6 +201,9 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
 
 std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident> car_accidents){
     std::map<std::pair<std::string, int>, Query3> query_results;
+    omp_set_num_threads(NUM_THREADS);
+    int chunkSize = car_accidents.size()/omp_get_max_threads();
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         std::vector<std::pair<std::string, int>> boroughs_weeks;
         if (car_accidents[i].borough != ""){
@@ -224,7 +235,7 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
 int main() {
     using namespace boost;
     using namespace boost::gregorian;
-    string data("./sample.csv");
+    string data(CSV_FILE);
 
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
@@ -237,11 +248,6 @@ int main() {
         vector<string> vec;
         Tokenizer tok(line);
         vec.assign(tok.begin(), tok.end());
-
-        // vector now contains strings from one row, output to cout here
-        // copy(vec.begin(), vec.end(), ostream_iterator<string>(cout, "|"));
-
-        // cout << "\n----------------------" << endl;
         if (headers.empty())
             headers = vec;
         else
@@ -249,10 +255,12 @@ int main() {
     }
     in.close();
     vector<vector<string> >::iterator it;
-    vector<string>::iterator i;
 
     vector<CarAccident> car_accidents;
 
+    omp_set_num_threads(NUM_THREADS);
+    int chunkSize = table.size()/omp_get_max_threads();
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < table.size(); i++) {
         CarAccident c;
         c.date = table[i][0];
@@ -265,6 +273,7 @@ int main() {
         c.on_street_name = table[i][7];
         c.cross_street_name = table[i][8];
         c.off_street_name = table[i][9];
+
         c.number_of_persons_injured = std::atoi(table[i][10].c_str());
         c.number_of_persons_killed = std::atoi(table[i][11].c_str());
         c.number_of_pedestrians_injured = std::atoi(table[i][12].c_str());
@@ -281,7 +290,8 @@ int main() {
         c.unique_key = std::atoi(table[i][23].c_str());
         car_accidents.push_back(c);
     }
-
+    cout << "END";
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         string formatted_date;
         std::string delimiter = "/";

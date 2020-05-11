@@ -102,7 +102,7 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
     std::map<string, Query2> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
-    #pragma omp parallel for schedule(dynamic, chunkSize)
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         vector<string> already_processed_factors;
         // CHECK FACTOR 1
@@ -311,7 +311,7 @@ int main() {
         car_accidents.push_back(c);
     }
     cout << "END";
-    #pragma omp for schedule(dynamic, chunkSize)
+    #pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         string formatted_date;
         std::string delimiter = "/";

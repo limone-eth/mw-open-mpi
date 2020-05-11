@@ -14,7 +14,7 @@ using namespace std;
 vector<string> headers;
 
 int NUM_THREADS = 16;
-string CSV_FILE = "./NYPD_Motor_Vehicle_Collisions.csv";
+string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 int colIndex(string col) {
     return find(headers.begin(), headers.end(), col) - headers.begin();
@@ -81,15 +81,15 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     std::map<int, int> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
-    #pragma omp for schedule(dynamic, chunkSize)
+    #pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         if (query_results.count(car_accidents[i].week_of_year) == false) {
             query_results[car_accidents[i].week_of_year] = car_accidents[i].number_of_persons_killed;
         } else {
+            #pragma omp atomic
             query_results[car_accidents[i].week_of_year] += car_accidents[i].number_of_persons_killed;
         }
     }
-    //#pragma omp barrier
 
     cout << "----- QUERY 1 -----" << endl;
     for (const auto&[k, v] : query_results)
@@ -102,7 +102,7 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
     std::map<string, Query2> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
-    #pragma omp for schedule(dynamic, chunkSize)
+    #pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         vector<string> already_processed_factors;
         // CHECK FACTOR 1
@@ -114,12 +114,15 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
                 query_results[car_accidents[i].factor_1].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_1].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_1].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[car_accidents[i].factor_1].total_accidents += 1;
                 query_results[car_accidents[i].factor_1].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_1].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_1].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_1].total_accidents;
+                }
             }
         }
         // CHECK FACTOR 2
@@ -131,12 +134,15 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
                 query_results[car_accidents[i].factor_2].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_2].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_2].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[car_accidents[i].factor_2].total_accidents += 1;
                 query_results[car_accidents[i].factor_2].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_2].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_2].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_2].total_accidents;
+                }
             }
         }
         // CHECK FACTOR 3
@@ -148,12 +154,15 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
                 query_results[car_accidents[i].factor_3].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_3].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_3].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[car_accidents[i].factor_3].total_accidents += 1;
                 query_results[car_accidents[i].factor_3].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_3].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_3].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_3].total_accidents;
+            }
             }
         }
         // CHECK FACTOR 4
@@ -165,12 +174,15 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
                 query_results[car_accidents[i].factor_4].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_4].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_4].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[car_accidents[i].factor_4].total_accidents += 1;
                 query_results[car_accidents[i].factor_4].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_4].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_4].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_4].total_accidents;
+            }
             }
         }
         // CHECK FACTOR 5
@@ -182,16 +194,20 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
                 query_results[car_accidents[i].factor_5].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_5].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_5].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[car_accidents[i].factor_5].total_accidents += 1;
                 query_results[car_accidents[i].factor_5].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_5].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_5].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_5].total_accidents;
             }
+            }
         }
 
     }
+    #pragma omp barrier
     cout << "----- QUERY 2 -----" << endl;
     for (const auto&[k, v] : query_results)
         std::cout << "factor[" << k << "] = total_accidents(" << v.total_accidents << ") | lethal_accidents(" << v.lethal_accidents << ") | lethal_percentage(" << v.lethal_percentage << ") "<< std::endl;
@@ -203,7 +219,7 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
     std::map<std::pair<std::string, int>, Query3> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
-    #pragma omp for schedule(dynamic, chunkSize)
+    #pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         std::vector<std::pair<std::string, int>> boroughs_weeks;
         if (car_accidents[i].borough != ""){
@@ -216,7 +232,9 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
                 query_results[b_w].lethal_average =
                         (float)query_results[b_w].lethal_accidents /
                                 (float)query_results[b_w].total_accidents;
-            } else {
+            }else {
+                #pragma omp critical 
+                {
                 query_results[b_w].total_accidents += 1;
                 query_results[b_w].lethal_accidents += car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
                 query_results[b_w].lethal_average =
@@ -225,6 +243,8 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
             }
         }
     }
+    }
+    #pragma omp barrier
     cout << "----- QUERY 3 -----" << endl;
     for (const auto&[k, v] : query_results)
         std::cout << "Borough[" << k << "] = total_accidents(" << v.total_accidents << ") | lethal_accidents(" << v.lethal_accidents << ") | average_lethal(" << v.lethal_average << ") "<< std::endl;
@@ -314,10 +334,10 @@ int main() {
 
     // ---- QUERY 1 ------
     std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
-
+    #pragma omp barrier
     // ---- QUERY 2 ------
-    std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
-
+    //std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
+    //#pragma omp barrier
     //---- QUERY 3 ------
     std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
 }

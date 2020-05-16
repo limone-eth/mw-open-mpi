@@ -311,14 +311,6 @@ int main() {
     auto duration_tokenizer = duration_cast<microseconds>(stop_tokenizer - start_tokenizer);
     in.close();
 
-
-    auto start_data = high_resolution_clock::now();
-
-    cout << "END";
-    
-    auto stop_data = high_resolution_clock::now();
-    auto duration_data = duration_cast<microseconds>(stop_data - start_data);
-
     // ---- QUERY 1 ------
     auto start_1 = high_resolution_clock::now();
     std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
@@ -336,12 +328,11 @@ int main() {
     std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
     #pragma omp barrier
     auto stop_3 = high_resolution_clock::now();
-    auto duration_3 = duration_cast<microseconds>(stop_3 - start_3);
+    auto duration_3 = duration_cast<microseconds>(stop_3 - start_3);*/
     cout << "DURATION FILE - " << duration_file.count() << endl;
     cout << "DURATION TOKENIZER - " << duration_tokenizer.count() << endl;
-    cout << "DURATION DATA - " << duration_data.count() << endl;
     cout << "DURATION Q1 - " << duration_1.count() << endl;
-    cout << "DURATION Q2 - " << duration_2.count() << endl;
+    /*cout << "DURATION Q2 - " << duration_2.count() << endl;
     cout << "DURATION Q3 - " << duration_3.count() << endl;*/
 }
 

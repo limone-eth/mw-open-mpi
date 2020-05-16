@@ -13,7 +13,7 @@
 using namespace std;
 vector<string> headers;
 
-int NUM_THREADS = 16;
+int NUM_THREADS = 8;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 int colIndex(string col) {
@@ -29,32 +29,25 @@ ostream& operator<<(ostream& os, const std::pair<std::string, int>& p)
 class CarAccident {
 public:
     string date;
-    string time;
     string borough;
-    string zip_code;
-    string lat;
-    string lng;
-    string location;
-    string on_street_name;
-    string cross_street_name;
-    string off_street_name;
-    int number_of_persons_injured;
-    int number_of_persons_killed;
-    int number_of_pedestrians_injured;
-    int number_of_pedestrians_killed;
-    int number_of_cyclist_injured;
-    int number_of_cyclist_killed;
-    int number_of_motorist_injured;
-    int number_of_motorist_killed;
+
     string factor_1;
     string factor_2;
     string factor_3;
     string factor_4;
     string factor_5;
-    int unique_key;
 
+    int total_kills;
+    int total_accidents;
     int week_of_year;
 } car_accident;
+
+class Query1 {
+    public:
+        int year;
+        int total_accidents;
+        int week;
+};
 
 class Query2 {
     public:
@@ -84,10 +77,10 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     #pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         if (query_results.count(car_accidents[i].week_of_year) == false) {
-            query_results[car_accidents[i].week_of_year] = car_accidents[i].number_of_persons_killed;
+            query_results[car_accidents[i].week_of_year] = car_accidents[i].total_kills;
         } else {
             #pragma omp atomic
-            query_results[car_accidents[i].week_of_year] += car_accidents[i].number_of_persons_killed;
+            query_results[car_accidents[i].week_of_year] += car_accidents[i].total_kills;
         }
     }
 
@@ -98,7 +91,7 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     return query_results;
 }
 
-std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
+/*std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
     std::map<string, Query2> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
@@ -110,7 +103,7 @@ std::map<string, Query2> evaluateQuery2(vector<CarAccident> car_accidents) {
             already_processed_factors.push_back(car_accidents[i].factor_1);
             if (query_results.count(car_accidents[i].factor_1) == false) {
                 query_results[car_accidents[i].factor_1].total_accidents = 1;
-                query_results[car_accidents[i].factor_1].lethal_accidents = car_accidents[i].number_of_persons_killed > 0 ? 1 : 0;
+                query_results[car_accidents[i].factor_1].lethal_accidents = car_accidents[i].total_kills > 0 ? 1 : 0;
                 query_results[car_accidents[i].factor_1].lethal_percentage =
                         (float)query_results[car_accidents[i].factor_1].lethal_accidents /
                                 (float)query_results[car_accidents[i].factor_1].total_accidents;
@@ -250,6 +243,26 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
         std::cout << "Borough[" << k << "] = total_accidents(" << v.total_accidents << ") | lethal_accidents(" << v.lethal_accidents << ") | average_lethal(" << v.lethal_average << ") "<< std::endl;
     cout << "-------------------" << endl;
     return query_results;
+}*/
+
+int get_week(std::string date){
+        std::string formatted_date;
+        std::string delimiter = "/";
+        size_t pos = 0;
+        std::string token;
+        vector<string> split;
+        std::string s = date + "/";
+        while ((pos = s.find(delimiter)) != std::string::npos) {
+            token = s.substr(0, pos);
+            split.push_back(token);
+            s.erase(0, pos + delimiter.length());
+        }
+        short unsigned int year = std::atoi(split[2].c_str());
+        short unsigned int month = std::atoi(split[0].c_str());
+        short unsigned int day = std::atoi(split[1].c_str());
+        boost::gregorian::date d{year, month, day};
+        return d.week_number();
+    
 }
 
 int main() {
@@ -261,85 +274,44 @@ int main() {
     if (!in.is_open()) return 1;
 
     typedef tokenizer <escaped_list_separator<char>> Tokenizer;
-    vector<vector<string> > table;
     string line;
-
+    vector<CarAccident> car_accidents;
+    
     while (getline(in, line)) {
         vector<string> vec;
         Tokenizer tok(line);
         vec.assign(tok.begin(), tok.end());
         if (headers.empty())
             headers = vec;
-        else
-            table.push_back(vec);
+        else{
+            CarAccident c;
+            c.date = vec[0];
+            c.factor_1 = vec[18];
+            c.factor_2 = vec[19];
+            c.factor_3 = vec[20];
+            c.factor_4 = vec[21];
+            c.factor_5 = vec[22];
+            c.week_of_year = get_week(vec[0]);
+            c.total_accidents = std::atoi(vec[10].c_str());
+            c.total_accidents += std::atoi(vec[12].c_str());
+            c.total_accidents += std::atoi(vec[14].c_str());
+            c.total_accidents += std::atoi(vec[16].c_str());
+            c.total_kills = std::atoi(vec[11].c_str());
+            c.total_kills += std::atoi(vec[13].c_str());
+            c.total_kills += std::atoi(vec[15].c_str());
+            c.total_kills += std::atoi(vec[17].c_str());
+            car_accidents.push_back(c);
+        }
     }
     in.close();
-    vector<vector<string> >::iterator it;
-
-    vector<CarAccident> car_accidents;
-
-    omp_set_num_threads(NUM_THREADS);
-    int chunkSize = table.size()/omp_get_max_threads();
-    #pragma omp for schedule(dynamic, chunkSize)
-    for (long unsigned int i = 0; i < table.size(); i++) {
-        CarAccident c;
-        c.date = table[i][0];
-        c.time = table[i][1];
-        c.borough = table[i][2];
-        c.zip_code = table[i][3];
-        c.lat = table[i][4];
-        c.lng = table[i][5];
-        c.location = table[i][6];
-        c.on_street_name = table[i][7];
-        c.cross_street_name = table[i][8];
-        c.off_street_name = table[i][9];
-
-        c.number_of_persons_injured = std::atoi(table[i][10].c_str());
-        c.number_of_persons_killed = std::atoi(table[i][11].c_str());
-        c.number_of_pedestrians_injured = std::atoi(table[i][12].c_str());
-        c.number_of_pedestrians_killed = std::atoi(table[i][13].c_str());
-        c.number_of_cyclist_injured = std::atoi(table[i][14].c_str());
-        c.number_of_cyclist_killed = std::atoi(table[i][15].c_str());
-        c.number_of_motorist_injured = std::atoi(table[i][16].c_str());
-        c.number_of_motorist_killed = std::atoi(table[i][17].c_str());
-        c.factor_1 = table[i][18];
-        c.factor_2 = table[i][19];
-        c.factor_3 = table[i][20];
-        c.factor_4 = table[i][21];
-        c.factor_5 = table[i][22];
-        c.unique_key = std::atoi(table[i][23].c_str());
-        car_accidents.push_back(c);
-    }
     cout << "END";
-    #pragma omp parallel for schedule(dynamic, chunkSize)
-    for (long unsigned int i = 0; i < car_accidents.size(); i++) {
-        string formatted_date;
-        std::string delimiter = "/";
-        size_t pos = 0;
-        std::string token;
-        vector<string> split;
-        std::string s = car_accidents[i].date + "/";
-        while ((pos = s.find(delimiter)) != std::string::npos) {
-            token = s.substr(0, pos);
-            split.push_back(token);
-            s.erase(0, pos + delimiter.length());
-        }
-        short unsigned int year = std::atoi(split[2].c_str());
-        short unsigned int month = std::atoi(split[0].c_str());
-        short unsigned int day = std::atoi(split[1].c_str());
-        boost::gregorian::date d{year, month, day};
-        int week_of_year = d.week_number();
-        car_accidents[i].week_of_year = week_of_year;
-    }
-
     // ---- QUERY 1 ------
     std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
-    #pragma omp barrier
     // ---- QUERY 2 ------
     //std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
     //#pragma omp barrier
     //---- QUERY 3 ------
-    std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
+    //std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
 }
 
 

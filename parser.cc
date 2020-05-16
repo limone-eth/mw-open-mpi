@@ -4,11 +4,12 @@
 #include <string>
 #include <algorithm>    // copy
 #include <iterator>     // ostream_operator
-#include <boost/tokenizer.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <time.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include <omp.h>
+#include <chrono>
+
 
 using namespace std;
 vector<string> headers;
@@ -74,7 +75,7 @@ std::map<int, int> evaluateQuery1(vector<CarAccident> car_accidents) {
     std::map<int, int> query_results;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size()/omp_get_max_threads();
-    #pragma omp parallel for schedule(dynamic, chunkSize)
+    #pragma omp for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         if (query_results.count(car_accidents[i].week_of_year) == false) {
             query_results[car_accidents[i].week_of_year] = car_accidents[i].total_kills;
@@ -266,52 +267,82 @@ int get_week(std::string date){
 }
 
 int main() {
-    using namespace boost;
     using namespace boost::gregorian;
-    string data(CSV_FILE);
+    using namespace std::chrono;
 
+    auto start_file = high_resolution_clock::now();
+    string data(CSV_FILE);
+    auto stop_file = high_resolution_clock::now();
+    auto duration_file = duration_cast<microseconds>(stop_file - start_file);
+    vector<CarAccident> car_accidents;
+    
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
 
-    typedef tokenizer <escaped_list_separator<char>> Tokenizer;
     string line;
-    vector<CarAccident> car_accidents;
-    
+    auto start_tokenizer = high_resolution_clock::now();
+
     while (getline(in, line)) {
         vector<string> vec;
-        Tokenizer tok(line);
-        vec.assign(tok.begin(), tok.end());
+        std::string token;
+        std::istringstream tokenStream(line);
+
+        while (std::getline(tokenStream, token, ','))
+            vec.push_back(token);
+
         if (headers.empty())
             headers = vec;
         else{
             CarAccident c;
             c.date = vec[0];
+            c.borough = vec[2];
             c.factor_1 = vec[18];
             c.factor_2 = vec[19];
             c.factor_3 = vec[20];
             c.factor_4 = vec[21];
             c.factor_5 = vec[22];
+            c.total_kills = std::atoi(vec[11].c_str()) + std::atoi(vec[13].c_str()) +std::atoi(vec[15].c_str())+ std::atoi(vec[17].c_str());
+            c.total_accidents = std::atoi(vec[10].c_str()) + std::atoi(vec[12].c_str()) +std::atoi(vec[16].c_str())+ std::atoi(vec[17].c_str());
             c.week_of_year = get_week(vec[0]);
-            c.total_accidents = std::atoi(vec[10].c_str());
-            c.total_accidents += std::atoi(vec[12].c_str());
-            c.total_accidents += std::atoi(vec[14].c_str());
-            c.total_accidents += std::atoi(vec[16].c_str());
-            c.total_kills = std::atoi(vec[11].c_str());
-            c.total_kills += std::atoi(vec[13].c_str());
-            c.total_kills += std::atoi(vec[15].c_str());
-            c.total_kills += std::atoi(vec[17].c_str());
             car_accidents.push_back(c);
         }
     }
+    auto stop_tokenizer = high_resolution_clock::now();
+    auto duration_tokenizer = duration_cast<microseconds>(stop_tokenizer - start_tokenizer);
     in.close();
+
+
+    auto start_data = high_resolution_clock::now();
+
     cout << "END";
+    
+    auto stop_data = high_resolution_clock::now();
+    auto duration_data = duration_cast<microseconds>(stop_data - start_data);
+
     // ---- QUERY 1 ------
+    auto start_1 = high_resolution_clock::now();
     std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
-    // ---- QUERY 2 ------
-    //std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
-    //#pragma omp barrier
+    #pragma omp barrier
+    auto stop_1 = high_resolution_clock::now();
+    auto duration_1 = duration_cast<microseconds>(stop_1 - start_1);
+    /*// ---- QUERY 2 ------
+    auto start_2 = high_resolution_clock::now();
+    std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
+    #pragma omp barrier
+    auto stop_2 = high_resolution_clock::now();
+    auto duration_2 = duration_cast<microseconds>(stop_2 - start_2);
     //---- QUERY 3 ------
-    //std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
+    auto start_3 = high_resolution_clock::now();
+    std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
+    #pragma omp barrier
+    auto stop_3 = high_resolution_clock::now();
+    auto duration_3 = duration_cast<microseconds>(stop_3 - start_3);
+    cout << "DURATION FILE - " << duration_file.count() << endl;
+    cout << "DURATION TOKENIZER - " << duration_tokenizer.count() << endl;
+    cout << "DURATION DATA - " << duration_data.count() << endl;
+    cout << "DURATION Q1 - " << duration_1.count() << endl;
+    cout << "DURATION Q2 - " << duration_2.count() << endl;
+    cout << "DURATION Q3 - " << duration_3.count() << endl;*/
 }
 
 

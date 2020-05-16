@@ -1,6 +1,6 @@
 #bin/sh
 
 make clean
-make parser.o
-make parser
+make -B parser.o
+make -B parser
 time ./parser

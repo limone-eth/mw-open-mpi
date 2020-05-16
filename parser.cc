@@ -4,16 +4,17 @@
 #include <string>
 #include <algorithm>    // copy
 #include <iterator>     // ostream_operator
-#include <boost/tokenizer.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <time.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include <omp.h>
+#include <chrono>
+
 
 using namespace std;
 vector<string> headers;
 
-int NUM_THREADS = 16;
+int NUM_THREADS = 8;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 int colIndex(string col) {
@@ -253,31 +254,45 @@ std::map<std::pair<std::string, int>, Query3> evaluateQuery3(vector<CarAccident>
 }
 
 int main() {
-    using namespace boost;
     using namespace boost::gregorian;
+    using namespace std::chrono;
+
+    auto start_file = high_resolution_clock::now();
     string data(CSV_FILE);
+    auto stop_file = high_resolution_clock::now();
+    auto duration_file = duration_cast<microseconds>(stop_file - start_file);
 
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
 
-    typedef tokenizer <escaped_list_separator<char>> Tokenizer;
     vector<vector<string> > table;
     string line;
 
+    auto start_tokenizer = high_resolution_clock::now();
     while (getline(in, line)) {
+        //vector<string> vec = split(line,",");
         vector<string> vec;
-        Tokenizer tok(line);
-        vec.assign(tok.begin(), tok.end());
+        std::string token;
+        std::istringstream tokenStream(line);
+        while (std::getline(tokenStream, token, ','))
+        {
+            vec.push_back(token);
+        }
+        //Tokenizer tok(line);
+        //vec.assign(tok.begin(), tok.end());
         if (headers.empty())
             headers = vec;
         else
             table.push_back(vec);
     }
+    auto stop_tokenizer = high_resolution_clock::now();
+    auto duration_tokenizer = duration_cast<microseconds>(stop_tokenizer - start_tokenizer);
     in.close();
     vector<vector<string> >::iterator it;
 
     vector<CarAccident> car_accidents;
 
+    auto start_data = high_resolution_clock::now();
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = table.size()/omp_get_max_threads();
     #pragma omp for schedule(dynamic, chunkSize)
@@ -331,15 +346,33 @@ int main() {
         int week_of_year = d.week_number();
         car_accidents[i].week_of_year = week_of_year;
     }
+    auto stop_data = high_resolution_clock::now();
+    auto duration_data = duration_cast<microseconds>(stop_data - start_data);
 
     // ---- QUERY 1 ------
+    auto start_1 = high_resolution_clock::now();
     std::map<int, int> query_1_results = evaluateQuery1(car_accidents);
     #pragma omp barrier
+    auto stop_1 = high_resolution_clock::now();
+    auto duration_1 = duration_cast<microseconds>(stop_1 - start_1);
     // ---- QUERY 2 ------
-    //std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
-    //#pragma omp barrier
+    auto start_2 = high_resolution_clock::now();
+    std::map<string, Query2> query_2_results = evaluateQuery2(car_accidents);
+    #pragma omp barrier
+    auto stop_2 = high_resolution_clock::now();
+    auto duration_2 = duration_cast<microseconds>(stop_2 - start_2);
     //---- QUERY 3 ------
+    auto start_3 = high_resolution_clock::now();
     std::map<std::pair<std::string, int>, Query3> query_3_results = evaluateQuery3(car_accidents);
+    #pragma omp barrier
+    auto stop_3 = high_resolution_clock::now();
+    auto duration_3 = duration_cast<microseconds>(stop_3 - start_3);
+    cout << "DURATION FILE - " << duration_file.count() << endl;
+    cout << "DURATION TOKENIZER - " << duration_tokenizer.count() << endl;
+    cout << "DURATION DATA - " << duration_data.count() << endl;
+    cout << "DURATION Q1 - " << duration_1.count() << endl;
+    cout << "DURATION Q2 - " << duration_2.count() << endl;
+    cout << "DURATION Q3 - " << duration_3.count() << endl;
 }
 
 

@@ -86,7 +86,6 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
 #pragma omp atomic
             query_results_1[s].total_accidents += car_accidents[i].total_kills;
         }
-
         // QUERY 2
         vector<string> already_processed_factors;
         // CHECK FACTOR 1
@@ -198,7 +197,6 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                 }
             }
         }
-
         // QUERY 3
         std::vector<std::pair<std::string, std::string>> boroughs_weeks;
         if (car_accidents[i].borough != "") {
@@ -278,10 +276,19 @@ int main() {
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
 
-    string line;
     auto start_tokenizer = high_resolution_clock::now();
-
-    while (getline(in, line)) {
+    bool stop = false;
+    #pragma omp parallel shared(in, stop)
+    {
+    string line;
+    while (!stop) {
+        #pragma omp critical (getline)
+        {
+            if(!getline(in, line))
+                stop = true;
+        }
+        if (stop)
+            break;
         vector<string> vec;
         std::string token;
         std::istringstream tokenStream(line);
@@ -306,15 +313,18 @@ int main() {
                     std::atoi(vec[10].c_str()) + std::atoi(vec[12].c_str()) + std::atoi(vec[16].c_str()) +
                     std::atoi(vec[17].c_str());
             c.week_of_year = get_week(vec[0]);
-            car_accidents.push_back(c);
+            #pragma omp critical (mergeAccidents)
+            {
+                car_accidents.push_back(c);
+            }
         }
+    }
     }
     auto stop_tokenizer = high_resolution_clock::now();
     auto duration_tokenizer = duration_cast<microseconds>(stop_tokenizer - start_tokenizer);
     in.close();
 
 
-#pragma omp barrier
     auto start_1 = high_resolution_clock::now();
     evaluateQueries(car_accidents);
     auto stop_1 = high_resolution_clock::now();

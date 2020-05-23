@@ -14,7 +14,7 @@
 using namespace std;
 vector<string> headers;
 
-int NUM_THREADS = 8;
+int NUM_THREADS = 16;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 int colIndex(string col) {
@@ -76,7 +76,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
     std::map<std::pair<std::string, std::string>, Query3> query_results_3;
     omp_set_num_threads(NUM_THREADS);
     int chunkSize = car_accidents.size() / omp_get_max_threads();
-#pragma omp for schedule(dynamic, chunkSize)
+#pragma omp parallel for schedule(dynamic, chunkSize)
     for (long unsigned int i = 0; i < car_accidents.size(); i++) {
         // QUERY 1
         std::string s = car_accidents[i].date.substr(6)+ " W:" + car_accidents[i].week_of_year;
@@ -98,7 +98,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_2[car_accidents[i].factor_1].lethal_accidents /
                         (float) query_results_2[car_accidents[i].factor_1].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (factor1)
                 {
                     query_results_2[car_accidents[i].factor_1].total_accidents += 1;
                     query_results_2[car_accidents[i].factor_1].lethal_accidents +=
@@ -120,7 +120,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_2[car_accidents[i].factor_2].lethal_accidents /
                         (float) query_results_2[car_accidents[i].factor_2].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (factor2)
                 {
                     query_results_2[car_accidents[i].factor_2].total_accidents += 1;
                     query_results_2[car_accidents[i].factor_2].lethal_accidents +=
@@ -142,7 +142,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_2[car_accidents[i].factor_3].lethal_accidents /
                         (float) query_results_2[car_accidents[i].factor_3].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (factor3)
                 {
                     query_results_2[car_accidents[i].factor_3].total_accidents += 1;
                     query_results_2[car_accidents[i].factor_3].lethal_accidents +=
@@ -164,7 +164,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_2[car_accidents[i].factor_4].lethal_accidents /
                         (float) query_results_2[car_accidents[i].factor_4].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (factor4)
                 {
                     query_results_2[car_accidents[i].factor_4].total_accidents += 1;
                     query_results_2[car_accidents[i].factor_4].lethal_accidents +=
@@ -186,7 +186,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_2[car_accidents[i].factor_5].lethal_accidents /
                         (float) query_results_2[car_accidents[i].factor_5].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (factor5)
                 {
                     query_results_2[car_accidents[i].factor_5].total_accidents += 1;
                     query_results_2[car_accidents[i].factor_5].lethal_accidents +=
@@ -211,7 +211,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
                         (float) query_results_3[b_w].lethal_accidents /
                         (float) query_results_3[b_w].total_accidents;
             } else {
-#pragma omp critical
+#pragma omp critical (query3)
                 {
                     query_results_3[b_w].total_accidents += 1;
                     query_results_3[b_w].lethal_accidents += car_accidents[i].total_kills > 0 ? 1 : 0;
@@ -223,7 +223,7 @@ void evaluateQueries(vector<CarAccident> car_accidents) {
         }
 
     }
-
+    #pragma omp barrier
     cout << "----- QUERY 1 -----" << endl;
     for (const auto&[k, v] : query_results_1)
         std::cout << "week[" << k << "] = total_lethal_accidents(" << v.total_accidents << ") " << std::endl;
@@ -278,6 +278,7 @@ int main() {
 
     auto start_tokenizer = high_resolution_clock::now();
     bool stop = false;
+    omp_set_num_threads(NUM_THREADS);
     #pragma omp parallel shared(in, stop)
     {
     string line;

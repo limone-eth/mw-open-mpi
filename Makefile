@@ -17,8 +17,17 @@ all: $(TARGET)
 clean:
 	rm -rf *.o $(TARGET)
 
+car_accident:
+	g++ -c CarAccident.cpp -o CarAccident.o
+
+query:
+	$(CXX) $(CXXFLAGS) $(C_OMP) -I . -c Query.cpp -o Query.o
+
+utils:
+	$(CXX) $(CXXFLAGS) $(C_OMP) -c Utils.cpp -o Utils.o
+
 parser.o:
-	$(CXX) $(CXXFLAGS) $(C_OMP) -c parser.cc -o parser.o
+	$(CXX) $(CXXFLAGS) $(C_OMP) -I. -c parser.cc -o parser.o
 
 parser: parser.o
 	$(CXX) $(C_OMP) -o parser parser.o

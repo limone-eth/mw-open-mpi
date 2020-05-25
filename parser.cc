@@ -28,6 +28,8 @@ ostream &operator<<(ostream &os, const std::pair<std::string, std::string> &p) {
 
 class CarAccident {
 public:
+    CarAccident() {}
+
     string date;
     string borough;
 
@@ -267,14 +269,14 @@ int main() {
     using namespace std;
     using namespace std::chrono;
 
-    auto start_file = high_resolution_clock::now();
     string data(CSV_FILE);
-    auto stop_file = high_resolution_clock::now();
-    auto duration_file = duration_cast<microseconds>(stop_file - start_file);
+
     vector<CarAccident> car_accidents;
 
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
+
+    vector< vector<string>> table;
 
     auto start_tokenizer = high_resolution_clock::now();
     bool stop = false;
@@ -321,18 +323,18 @@ int main() {
         }
     }
     }
+
     auto stop_tokenizer = high_resolution_clock::now();
     auto duration_tokenizer = duration_cast<microseconds>(stop_tokenizer - start_tokenizer);
-    in.close();
 
-
-    auto start_1 = high_resolution_clock::now();
+    auto start_queries = high_resolution_clock::now();
+    cout << "EVALUATE" << endl;
     evaluateQueries(car_accidents);
-    auto stop_1 = high_resolution_clock::now();
-    auto duration_1 = duration_cast<microseconds>(stop_1 - start_1);
-    cout << "DURATION FILE - " << duration_file.count() << endl;
+    auto stop_queries = high_resolution_clock::now();
+    auto duration_queries = duration_cast<microseconds>(stop_queries - start_queries);
+
     cout << "DURATION TOKENIZER - " << duration_tokenizer.count() << endl;
-    cout << "DURATION Q1 - " << duration_1.count() << endl;
+    cout << "DURATION Q1 - " << duration_queries.count() << endl;
 }
 
 

@@ -15,9 +15,7 @@ vector<string> headers;
 int NUM_THREADS = 16;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
-
 int main() {
-    using namespace boost::gregorian;
     using namespace std;
     using namespace std::chrono;
 

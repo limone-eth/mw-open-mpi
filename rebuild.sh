@@ -4,6 +4,6 @@ make clean
 make car_accident
 make query
 make utils
-make -B parser.o
-make -B parser
-time ./parser
+make -B main.o
+make -B main
+time ./main

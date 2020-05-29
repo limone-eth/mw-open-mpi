@@ -24,7 +24,7 @@ public:
     int total_kills;
     int total_accidents;
     string week_of_year;
-}car_accident;
+};
 
 
 #endif //MW_OPEN_MPI_CARACCIDENT_H

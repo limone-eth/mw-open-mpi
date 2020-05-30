@@ -1,9 +1,5 @@
 #bin/sh
 
 make clean
-make car_accident
-make query
-make utils
-make -B main.o
-make -B main
-time ./main
+make all
+PMIX_MCA_gds=^ds21 mpirun -hostfile hostfile -n 2 ./mw-open-mpi

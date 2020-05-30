@@ -39,8 +39,13 @@ template<typename T> int freeMatrix(T ***set);
 
 template<typename T> int allocateMatrix(T ***set, int rows, int columns, T value);
 
-bool is_in_array(const std::string &value, const std::vector <string> &array) {
-    return std::find(array.begin(), array.end(), value) != array.end();
+bool is_in_array(string value, vector<string> array) {
+    return find(array.begin(), array.end(), value) != array.end();
+}
+
+ostream &operator<<(ostream &os, const std::pair<std::string, std::string> &p) {
+    os << p.first << ' ' << p.second << ' ';
+    return os;
 }
 
 int get_week(std::string date) {
@@ -56,11 +61,11 @@ int get_week(std::string date) {
         s.erase(0, pos + delimiter.length());
     }
     std::tm d={};
-    if (split.size() > 0){
+    if (!split.empty()){
         try {
-            d.tm_year=stoi(split[2].c_str());
-            d.tm_mon=stoi(split[0].c_str());
-            d.tm_mday=stoi(split[1].c_str());
+            d.tm_year=stoi(split[2]);
+            d.tm_mon=stoi(split[0]);
+            d.tm_mday=stoi(split[1]);
         } catch (int e){
             cout << "ERROR DATE" << endl;
             throw e;
@@ -177,7 +182,6 @@ int main() {
     cout << PROCESS_RANK << " - " << local_timer_reading << endl;
 
 
-
     /*
      * @@@@@@@@
      *
@@ -185,7 +189,7 @@ int main() {
      *
      * @@@@@@@@
      */
-    const int WEEKS = 500;
+    const int WEEKS = 51;
 
     int * local_lethal_accidents_per_week[WEEKS] = {0};
     vector<int> global_lethal_accidents_per_week(WEEKS, 0);
@@ -203,9 +207,11 @@ int main() {
         if(local_dataset[i][11] != "0"){
             local_lethal_accidents_per_week[w]++;
         }
+
     }
 
     MPI_Reduce(local_lethal_accidents_per_week, &global_lethal_accidents_per_week[0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
     if (PROCESS_RANK == 0) {
         cout << "QUERY 1 completed -> " << MPI_Wtime() << endl;
 
@@ -227,42 +233,95 @@ int main() {
      * @@@@@@@@
      */
 
-    // Compute number of accidents per contributing factor
-    /*int is_lethal;
+    // storing local factors
+    vector<string> factors;
+    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+        for (int j = 18; j < 23; ++j) {
+            if(!is_in_array(local_dataset[i][j], factors)) {
+                factors.push_back(local_dataset[i][j]);
+            }
+        }
+    }
 
-    // create map to store for each global factors, how many persons have been killed
-    map<string, int> global_factors = {};
+    int LOCAL_FACTORS_SIZE = factors.size();
+    int MAX_FACTORS_SIZE = 0;
+
+
+    MPI_Allreduce(&LOCAL_FACTORS_SIZE, &MAX_FACTORS_SIZE, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+
+    // Convert factors to contiguous array
+    char ** local_factors;
+
+    allocateMatrix(&local_factors, MAX_FACTORS_SIZE, MAX_CF_LENGHT, '\0');
+
+    for(i = 0; i < LOCAL_FACTORS_SIZE; ++i)
+        factors[i].copy(local_factors[i], factors[i].length() + 1);
+
+    factors.clear();
+
+    // Populate global factors variable
+    char ** global_factors_nn;
+
+    allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE * SIZE, MAX_CF_LENGHT, '\0');
+
+    MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
+
+    // Create map to join all the local factors in a single one
+    map<string, int> global_factors;
+
+    for(i = 0; i < MAX_FACTORS_SIZE * SIZE; ++i) {
+        if((global_factors.find(global_factors_nn[i]) == global_factors.end()) && strlen(global_factors_nn[i])) {
+            global_factors[global_factors_nn[i]] = 0;
+        }
+    }
+
+    i = 0;
+
+    // setting an integer index for each factor
+    for(auto & f: global_factors) {
+        f.second = f.second + i;
+        i++;
+    }
 
     // local variables
-    int * local_accidents_per_factor = new int[global_factors.size()] {0};
-    int * local_lethal_accidents_per_factor  = new int[global_factors.size()] {0};
+    int * local_accidents_per_factor[global_factors.size()];
+    int * local_lethal_accidents_per_factor[global_factors.size()];
+    for (i = 0; i < global_factors.size(); i++){
+        local_accidents_per_factor[i] = 0;
+        local_lethal_accidents_per_factor[i] = 0;
+    }
     vector<string> already_processed_factors;
-#pragma omp parallel for default(shared) private(i, j, is_lethal, already_processed_factors) reduction(+: local_apcf[:global_factors.size()], local_lapcf[:global_factors.size()])
+#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
     for(i = 0; i < ROWS_PER_PROCESS; ++i) {
-        is_lethal = 0;
-
-        if(stoi(local_dataset[i][11]) + stoi(local_dataset[i][13]) + stoi(local_dataset[i][15]) + stoi(local_dataset[i][17]) > 0) {
-            is_lethal = 1;
-        }
-
         for(int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
-                // If the factor has been already analysed for that line, skip it
-                if (is_in_array(local_dataset[i][j], already_processed_factors)) {
-                    continue;
-                }
-                else {
+                // If the factor has not been already processed for that line, do the sum
+                if (!is_in_array(local_dataset[i][j], already_processed_factors) && local_dataset[i][j] != "0") {
                     local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
-                    local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] += is_lethal;
-
+                    local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] += local_dataset[i][11] != "0" ? 1 : 0;
                     already_processed_factors.push_back(local_dataset[i][j]);
                 }
             }
         }
-
         already_processed_factors.clear();
-    }*/
+    }
 
+    vector<int> global_accidents_per_factor(global_factors.size(), 0);
+    vector<int> global_lethal_accidents_per_factor(global_factors.size(), 0);
+
+    // Reduce local array to global correspondents
+    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size(), MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size(), MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (PROCESS_RANK == 0) {
+        cout << "QUERY 2 completed -> " << MPI_Wtime() << endl;
+
+        cout << "ACCIDENTS AND PERCENTAGE OF L/NL ACCIDENTS PER CONTRIBUTING FACTOR" << endl;
+
+        for (const auto & f: global_factors)
+            cout << "-- FACTOR: " << f.first << ", " << global_accidents_per_factor[f.second] << ", " << global_lethal_accidents_per_factor[f.second]  << ", " << 100 * ((double) global_lethal_accidents_per_factor[f.second] / (double)global_accidents_per_factor[f.second]) << "%" << endl;
+        cout << endl;
+    }
 
     /*auto start_queries = high_resolution_clock::now();
     cout << "EVALUATING..." << endl;

@@ -402,8 +402,6 @@ int main() {
         }
     }
 
-
-
     // Compute number of lethal accidents per borough & accidents per borough per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {

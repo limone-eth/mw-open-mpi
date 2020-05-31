@@ -377,19 +377,20 @@ int main() {
         i++;
     }
 
-    int * local_lethal_accidents_per_borough = new int[global_boroughs.size()] {0};
+    int * local_lethal_accidents_per_borough = new int[global_boroughs.size()]{0};
     int **local_accidents_per_borough_per_week;
 
     allocateMatrix(&local_accidents_per_borough_per_week, global_boroughs.size(), WEEKS, 0);
 
     // Compute number of lethal accidents per borough & accidents per borough per week
-#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()], local_accidents_per_borough_per_week[:global_boroughs.size()])
+#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()])
     for(i = 0; i < ROWS_PER_PROCESS; ++i) {
 
         // check if borough column is not empty
         if (!local_dataset[i][2].empty()) {
             local_current_date = local_dataset[i][0];
 
+            // if is lethal, we add 1 otherwise 0
             local_lethal_accidents_per_borough[global_boroughs[local_dataset[i][2]]] += local_dataset[i][11] != "0" ? 1 : 0;
             w = get_week(local_current_date);
 #pragma omp atomic
@@ -418,8 +419,6 @@ int main() {
 
         cout << endl;
     }
-
-
 
     MPI_Finalize();
 }

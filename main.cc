@@ -26,7 +26,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define MAX_CF_LENGHT 100
 #define MAX_LINE_LENGHT 500
 
-#define BOROUGHS 5
+
 #define SECONDS_PER_WEEK 604800
 
 #define NUMBER_OF_INDICATORS 10
@@ -202,8 +202,9 @@ int main() {
     for(i = 0; i < ROWS_PER_PROCESS; ++i) {
         local_current_date = local_dataset[i][0];
         int sum;
-        // if num of persons killed > 0
+        // get week number from date
         w = get_week(local_current_date);
+        // if num of persons killed > 0
         if(local_dataset[i][11] != "0"){
             local_lethal_accidents_per_week[w]++;
         }
@@ -323,12 +324,103 @@ int main() {
         cout << endl;
     }
 
-    /*auto start_queries = high_resolution_clock::now();
-    cout << "EVALUATING..." << endl;
-    Query::evaluateQueries(car_accidents, NUM_THREADS);
-    auto stop_queries = high_resolution_clock::now();
-    auto duration_queries = duration_cast<microseconds>(stop_queries - start_queries);*/
-    // cout << "DURATION Q1 - " << duration_queries.count() << endl;
+    /*
+     * @@@@@@@@
+     *
+     * QUERY 3
+     *
+     * @@@@@@@@
+     */
+
+    // storing local boroughs
+    vector<string> boroughs;
+    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+        if(!is_in_array(local_dataset[i][2], boroughs) && !local_dataset[i][2].empty()) {
+            boroughs.push_back(local_dataset[i][2]);
+        }
+    }
+
+    int LOCAL_BOROUGHS_SIZE = boroughs.size();
+    int MAX_BOROUGHS_SIZE = 0;
+
+    MPI_Allreduce(&LOCAL_BOROUGHS_SIZE, &MAX_BOROUGHS_SIZE, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+
+    // Convert boroughs to contiguous array
+    char ** local_boroughs;
+
+    allocateMatrix(&local_boroughs, MAX_BOROUGHS_SIZE, MAX_CF_LENGHT, '\0');
+
+    for(i = 0; i < LOCAL_BOROUGHS_SIZE; ++i)
+        boroughs[i].copy(local_boroughs[i], boroughs[i].length() + 1);
+
+    boroughs.clear();
+
+    // Populate global boroughs variable
+    char ** global_boroughs_nn;
+
+    allocateMatrix(&global_boroughs_nn, MAX_BOROUGHS_SIZE * SIZE, MAX_CF_LENGHT, '\0');
+
+    MPI_Allgather(&local_boroughs[0][0], MAX_BOROUGHS_SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_boroughs_nn[0][0], MAX_BOROUGHS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
+
+    map<string, int> global_boroughs;
+    for(i = 0; i < MAX_BOROUGHS_SIZE * SIZE; ++i) {
+        if((global_boroughs.find(global_boroughs_nn[i]) == global_boroughs.end()) && strlen(global_boroughs_nn[i])) {
+            global_boroughs[global_boroughs_nn[i]] = 0;
+        }
+    }
+
+    i = 0;
+
+    // setting an integer index for each factor
+    for(auto & f: global_boroughs) {
+        f.second = f.second + i;
+        i++;
+    }
+
+    int * local_lethal_accidents_per_borough = new int[global_boroughs.size()] {0};
+    int **local_accidents_per_borough_per_week;
+
+    allocateMatrix(&local_accidents_per_borough_per_week, global_boroughs.size(), WEEKS, 0);
+
+    // Compute number of lethal accidents per borough & accidents per borough per week
+#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()], local_accidents_per_borough_per_week[:global_boroughs.size()])
+    for(i = 0; i < ROWS_PER_PROCESS; ++i) {
+
+        // check if borough column is not empty
+        if (!local_dataset[i][2].empty()) {
+            local_current_date = local_dataset[i][0];
+
+            local_lethal_accidents_per_borough[global_boroughs[local_dataset[i][2]]] += local_dataset[i][11] != "0" ? 1 : 0;
+            w = get_week(local_current_date);
+#pragma omp atomic
+            local_accidents_per_borough_per_week[global_boroughs[local_dataset[i][2]]][w]++;
+        }
+    }
+
+
+    vector<int> global_lethal_accidents_per_borough(global_boroughs.size(), 0);
+    vector<vector<int>> global_accidents_per_borough_per_week(global_boroughs.size(), vector<int>(WEEKS, 0));
+
+    MPI_Reduce(&local_lethal_accidents_per_borough[0], &global_lethal_accidents_per_borough[0], global_boroughs.size(), MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    for(const auto & b : global_boroughs)
+        MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0], &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (PROCESS_RANK == 0){
+        cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
+
+        for (const auto & b: global_boroughs) {
+            cout << "BOROUGH: " << b.first << " (Lethal Accidents: " << global_lethal_accidents_per_borough[global_boroughs[b.first]] << ", Average: " << ((double)global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double)WEEKS) << ")" << endl;
+            for(w = 0; w < WEEKS; ++w) {
+                cout << "---- Week " << w << ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w] << endl;
+            }
+        }
+
+        cout << endl;
+    }
+
+
+
     MPI_Finalize();
 }
 

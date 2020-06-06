@@ -1,0 +1,3 @@
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles/rebuild_cache.dir
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles/edit_cache.dir
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles/mw-open-mpi.dir

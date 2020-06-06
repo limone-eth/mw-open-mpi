@@ -21,8 +21,6 @@ using namespace boost::gregorian;
 int NUM_THREADS = 2;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
-#define OMPI_SKIP_MPICXX
-
 #define ROWS 955928
 #define COLUMNS 29
 #define MAX_CF_LENGHT 100

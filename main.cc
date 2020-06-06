@@ -74,7 +74,7 @@ int get_week(std::string date) {
 
 int main() {
     using namespace std;
-    using namespace std::chrono;
+    // using namespace std::chrono;
 
     int PROCESS_RANK;
     int SIZE;

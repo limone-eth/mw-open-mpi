@@ -1,1 +1,0 @@
-/usr/local/Cellar/llvm/10.0.0_1/bin/clang++  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/mw-open-mpi.dir/parallel.cc.o  -o mw-open-mpi 

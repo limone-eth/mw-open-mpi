@@ -275,8 +275,8 @@ int main() {
     }
 
     // local variables
-    int local_accidents_per_factor[global_factors.size()];
-    int local_lethal_accidents_per_factor[global_factors.size()];
+    int *local_accidents_per_factor[global_factors.size()];
+    int *local_lethal_accidents_per_factor[global_factors.size()];
     for (i = 0; i < global_factors.size(); i++) {
         local_accidents_per_factor[i] = 0;
         local_lethal_accidents_per_factor[i] = 0;

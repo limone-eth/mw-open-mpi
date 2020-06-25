@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(mw-open-mpi)
+project(mw-open-mpi CXX)
 
 add_executable(mw-open-mpi main.cc)
 

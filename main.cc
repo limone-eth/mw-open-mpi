@@ -266,6 +266,7 @@ int main() {
     }
 
     i = 0;
+    int j = 0;
 
     // setting an integer index for each factor
     for (auto &f: global_factors) {
@@ -283,7 +284,7 @@ int main() {
     vector<string> already_processed_factors;
 #pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
-        for (int j = 18; j < 23; j++) {
+        for (j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
                 // If the factor has not been already processed for that line, do the sum
                 if (!is_in_array(local_dataset[i][j], already_processed_factors) && local_dataset[i][j] != "0") {

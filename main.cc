@@ -185,7 +185,7 @@ int main() {
     int w;
 
     // Compute number of lethal accidents per week
-#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:WEEKS])
+#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:WEEKS][0])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         local_current_date = local_dataset[i][0];
 
@@ -282,7 +282,7 @@ int main() {
         local_lethal_accidents_per_factor[i] = 0;
     }
     vector<string> already_processed_factors;
-#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
+#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()][0], local_lethal_accidents_per_factor[:global_factors.size()][0])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         for (j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
@@ -390,7 +390,7 @@ int main() {
     }
 
     // Compute number of lethal accidents per borough & accidents per borough per week
-#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()])
+#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()][0])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
 
         // check if borough column is not empty

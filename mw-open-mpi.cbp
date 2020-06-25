@@ -4,7 +4,7 @@
 	<Project>
 		<Option title="mw-open-mpi"/>
 		<Option makefile_is_custom="1"/>
-		<Option compiler="clang"/>
+		<Option compiler="gcc"/>
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
@@ -42,7 +42,7 @@
 				<Option working_dir="/Users/simonestaffa/Desktop/MW/mw-open-mpi"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="clang"/>
+				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/local/Cellar/open-mpi/4.0.3/include"/>
@@ -59,7 +59,7 @@
 				<Option working_dir="/Users/simonestaffa/Desktop/MW/mw-open-mpi"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="clang"/>
+				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/local/Cellar/open-mpi/4.0.3/include"/>

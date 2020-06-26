@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 project(mw-open-mpi)
 
 add_executable(mw-open-mpi main.cc)
+set(CMAKE_CXX_STANDARD 11)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD 11)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)

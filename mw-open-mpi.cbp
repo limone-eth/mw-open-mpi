@@ -44,7 +44,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DOMPI_SKIP_MPICXX"/>
 					<Add directory="/usr/include"/>
 					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/mpich"/>
@@ -65,7 +64,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add option="-DOMPI_SKIP_MPICXX"/>
 					<Add directory="/usr/include"/>
 					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/mpich"/>

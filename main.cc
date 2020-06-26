@@ -146,6 +146,7 @@ int main() {
     vector<vector<string> > local_dataset(ROWS, vector<string>(COLUMNS));
 
     int i = 0;
+    int j = 0;
     string column;
     istringstream stream;
     // reading scattered_data into the local_dataset variable

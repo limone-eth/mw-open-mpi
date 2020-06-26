@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(mw-open-mpi CXX)
+
+add_executable(mw-open-mpi main.cc)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD 11)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD_REQUIRED ON)
-add_executable(mw-open-mpi main.cc)
 
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)

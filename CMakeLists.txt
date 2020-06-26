@@ -5,9 +5,8 @@ add_executable(mw-open-mpi main.cc)
 set_target_properties(mw-open-mpi PROPERTIES
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON)
-include_directories(/usr/local/include)
-include_directories(/usr/include)
-include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+
+
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -24,7 +23,9 @@ message(STATUS ${OpenMP_C_LIBRARIES})
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 
-
-
+include_directories(/usr/local/include)
+include_directories(/usr/include)
+include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+include_directories(SYSTEM ${OpenMP_INCLUDE_PATH})
 target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${OpenMP_CXX_LIBRARIES})

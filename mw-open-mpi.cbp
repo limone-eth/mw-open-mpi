@@ -11,30 +11,30 @@
 				<Option working_dir="/Users/simonestaffa/Desktop/MW/mw-open-mpi"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/Users/simonestaffa/Desktop/MW/mw-open-mpi"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
 				<Option working_dir="/Users/simonestaffa/Desktop/MW/mw-open-mpi"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="mw-open-mpi">
@@ -44,16 +44,19 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/include/mpi"/>
-					<Add directory="/usr/include/mpich"/>
-					<Add directory="/usr/include/openmpi"/>
+					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/local/Cellar/open-mpi/4.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 mw-open-mpi"/>
-					<CompileFile command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 mw-open-mpi"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="mw-open-mpi/fast">
@@ -63,16 +66,19 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/include/mpi"/>
-					<Add directory="/usr/include/mpich"/>
-					<Add directory="/usr/include/openmpi"/>
+					<Add directory="/usr/local/include"/>
 					<Add directory="/usr/local/Cellar/open-mpi/4.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 mw-open-mpi/fast"/>
-					<CompileFile command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/local/bin/gmake -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 mw-open-mpi/fast"/>
+					<CompileFile command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/local/bin/gmake -j8 -f &quot;/Users/simonestaffa/Desktop/MW/mw-open-mpi/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

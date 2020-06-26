@@ -1,3 +1,4 @@
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <iostream>     // cout, endl
 #include <fstream>
 #include <cstdlib>
@@ -11,7 +12,6 @@
 #include <mpi.h>
 #include <map>
 #include "CarAccident.cpp"
-#include <boost/date_time/gregorian/gregorian.hpp>
 // #include "Query.cpp"
 //#include "Utils.cpp"
 

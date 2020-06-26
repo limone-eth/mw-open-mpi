@@ -4,7 +4,7 @@ project(mw-open-mpi)
 add_executable(mw-open-mpi main.cc)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD 11)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD_REQUIRED ON)
-
+set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")

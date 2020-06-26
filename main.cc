@@ -266,7 +266,7 @@ int main() {
     }
 
     i = 0;
-
+    int j = 0;
     // setting an integer index for each factor
     for (auto &f: global_factors) {
         f.second = f.second + i;

@@ -8,7 +8,7 @@
 #include <string>
 #include <time.h>
 #include <omp.h>
-#include <mpi.h>
+#include <usr/local/include/mpi.h>
 #include <map>
 #include "CarAccident.cpp"
 #include <boost/date_time/gregorian/gregorian.hpp>

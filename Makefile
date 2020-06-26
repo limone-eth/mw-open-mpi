@@ -114,17 +114,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named mw-open-mpi
+# Target rules for targets named mw-open-mpi-exec
 
 # Build rule for target.
-mw-open-mpi: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 mw-open-mpi
-.PHONY : mw-open-mpi
+mw-open-mpi-exec: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 mw-open-mpi-exec
+.PHONY : mw-open-mpi-exec
 
 # fast build rule for target.
-mw-open-mpi/fast:
-	$(MAKE) -f CMakeFiles/mw-open-mpi.dir/build.make CMakeFiles/mw-open-mpi.dir/build
-.PHONY : mw-open-mpi/fast
+mw-open-mpi-exec/fast:
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/build
+.PHONY : mw-open-mpi-exec/fast
 
 main.o: main.cc.o
 
@@ -132,7 +132,7 @@ main.o: main.cc.o
 
 # target to build an object file
 main.cc.o:
-	$(MAKE) -f CMakeFiles/mw-open-mpi.dir/build.make CMakeFiles/mw-open-mpi.dir/main.cc.o
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.o
 .PHONY : main.cc.o
 
 main.i: main.cc.i
@@ -141,7 +141,7 @@ main.i: main.cc.i
 
 # target to preprocess a source file
 main.cc.i:
-	$(MAKE) -f CMakeFiles/mw-open-mpi.dir/build.make CMakeFiles/mw-open-mpi.dir/main.cc.i
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.i
 .PHONY : main.cc.i
 
 main.s: main.cc.s
@@ -150,7 +150,7 @@ main.s: main.cc.s
 
 # target to generate assembly for a file
 main.cc.s:
-	$(MAKE) -f CMakeFiles/mw-open-mpi.dir/build.make CMakeFiles/mw-open-mpi.dir/main.cc.s
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.s
 .PHONY : main.cc.s
 
 # Help Target
@@ -161,7 +161,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... mw-open-mpi"
+	@echo "... mw-open-mpi-exec"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -14,7 +14,9 @@ endif()
 
 message(STATUS ${MPI_INCLUDE_PATH})
 message(STATUS ${MPI_CXX_LIBRARIES})
+message(STATUS ${MPI_C_LIBRARIES})
 message(STATUS ${OpenMP_CXX_LIBRARIES})
+message(STATUS ${OpenMP_C_LIBRARIES})
 
 find_package(MPI REQUIRED)
 

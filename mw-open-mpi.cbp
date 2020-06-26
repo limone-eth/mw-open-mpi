@@ -44,7 +44,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/include"/>
 					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/mpich"/>
 					<Add directory="/usr/include/openmpi"/>
@@ -64,7 +63,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/include"/>
 					<Add directory="/usr/include/mpi"/>
 					<Add directory="/usr/include/mpich"/>
 					<Add directory="/usr/include/openmpi"/>

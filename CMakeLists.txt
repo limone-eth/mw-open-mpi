@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(mw-open-mpi CXX)
+project(mw-open-mpi)
 
 add_executable(mw-open-mpi main.cc)
 set_property(TARGET mw-open-mpi PROPERTY CXX_STANDARD 11)

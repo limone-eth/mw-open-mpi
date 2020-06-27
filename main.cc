@@ -25,7 +25,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define COLUMNS 29
 #define MAX_CF_LENGHT 100
 #define MAX_LINE_LENGHT 500
-#define PRINT_RESULTS false
+#define PRINT_RESULTS true
 
 void normalize(string *str_line);
 

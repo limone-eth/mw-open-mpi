@@ -11,6 +11,7 @@
 #include <omp.h>
 #include <mpi.h>
 #include <map>
+#include <set>
 #include "CarAccident.cpp"
 // #include "Query.cpp"
 //#include "Utils.cpp"
@@ -227,12 +228,10 @@ int main() {
     local_performance[3] = MPI_Wtime();
 
     // storing local factors
-    vector<string> factors;
+    set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         for (int j = 18; j < 23; ++j) {
-            if (!is_in_array(local_dataset[i][j], factors)) {
-                factors.push_back(local_dataset[i][j]);
-            }
+            factors.insert(local_dataset[i][j]);
         }
     }
 
@@ -246,9 +245,11 @@ int main() {
 
     allocateMatrix(&local_factors, MAX_FACTORS_SIZE, MAX_CF_LENGHT, '\0');
 
-    for (i = 0; i < LOCAL_FACTORS_SIZE; ++i)
-        factors[i].copy(local_factors[i], factors[i].length() + 1);
-
+    i = 0;
+    for (auto elem : factors){
+        elem.copy(local_factors[i], elem.length() + 1);
+        i++;
+    }
     factors.clear();
 
     // Populate global factors variable
@@ -283,17 +284,17 @@ int main() {
         local_accidents_per_factor[i] = 0;
         local_lethal_accidents_per_factor[i] = 0;
     }
-    vector<string> already_processed_factors;
+    set<string> already_processed_factors;
 #pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
                 // If the factor has not been already processed for that line, do the sum
-                if (!is_in_array(local_dataset[i][j], already_processed_factors) && local_dataset[i][j] != "0") {
+                if ( local_dataset[i][j] != "0") {
                     local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                     local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
                             local_dataset[i][11] != "0" ? 1 : 0;
-                    already_processed_factors.push_back(local_dataset[i][j]);
+                    already_processed_factors.insert(local_dataset[i][j]);
                 }
             }
         }

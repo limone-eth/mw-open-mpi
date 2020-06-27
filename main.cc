@@ -100,13 +100,13 @@ int main() {
     tzset();
 
     // Local performance indicators will be then used to evaluate global performance
-    auto * local_performance = new double[6]{0.0};
+    auto * local_performance = new double[5]{0.0};
 
     double local_timer_start = MPI_Wtime();
 
     // How many rows each process should process
     int ROWS_PER_PROCESS = ROWS / SIZE;
-
+    
     // empty dataset
     char **car_accidents;
     char **scattered_car_accidents;
@@ -133,17 +133,17 @@ int main() {
 
     // File reading ends here, get time
     local_performance[0] = MPI_Wtime();
-    cout << "Works so far";
+    
     // scatter data
     MPI_Scatter(&car_accidents[0][0], ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, &scattered_car_accidents[0][0],
                 ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, 0, MPI_COMM_WORLD);
     freeMatrix<char>(&car_accidents);
-    cout << "Works so far";
+    
     // At this point, each process has a piece of the file on which to operate
     local_performance[1] = MPI_Wtime();
 
     // Prepare dataset
-    vector<vector<string> > local_dataset(ROWS, vector<string>(COLUMNS));
+    vector<vector<string> > local_dataset(ROWS_PER_PROCESS, vector<string>(COLUMNS));
 
     int i = 0;
     int j = 0;
@@ -162,7 +162,7 @@ int main() {
         i++;
     }
     freeMatrix<char>(&scattered_car_accidents);
-
+    
     // The dataset is prepared into the local variables
     local_performance[2] = MPI_Wtime();
 
@@ -175,7 +175,7 @@ int main() {
      */
 
     // Query 1 start
-    local_performance[3] = MPI_Wtime();
+    //local_performance[3] = MPI_Wtime();
 
     const int WEEKS = 51;
 
@@ -224,7 +224,7 @@ int main() {
      * @@@@@@@@
      */
     // Query 2 start
-    local_performance[4] = MPI_Wtime();
+    local_performance[3] = MPI_Wtime();
 
     // storing local factors
     vector<string> factors;
@@ -332,7 +332,7 @@ int main() {
      */
 
     // Query 3 start
-    local_performance[5] = MPI_Wtime();
+    local_performance[4] = MPI_Wtime();
 
     // storing local boroughs
     vector<string> boroughs;
@@ -418,7 +418,8 @@ int main() {
     for (const auto &b : global_boroughs)
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
                    &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-
+    //Query3 end
+    local_performance[5] = MPI_Wtime();
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
@@ -449,23 +450,24 @@ int main() {
 
     MPI_Reduce(&local_performance[0], &global_pi[0], 6, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-    cout << "Execution time: " << global_end - global_start << " s\n" << endl;
+    if(PROCESS_RANK == 0){
+        cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
-    for (i = 0; i < 6; ++i)
-        global_pi[i] -= global_start;
+        for (i = 0; i < 6; ++i)
+            global_pi[i] -= global_start;
 
-    for (i = 5; i > 0; --i)
-        global_pi[i] -= global_pi[i - 1];
+        for (i = 5; i > 0; --i)
+            global_pi[i] -= global_pi[i - 1];
 
 
-    // Printing performance indicators as array object
-    cout << "[" << process_name << ", " << SIZE << ", " << threads << ", ";
+        // Printing performance indicators as array object
+        cout << "[" << process_name << ", " << SIZE << ", " << threads << ", ";
 
-    for (i = 0; i < 6; ++i)
-        cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
+        for (i = 0; i < 6; ++i)
+            cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
-    cout << global_end - global_start << "]" << endl;
-
+        cout << global_end - global_start << "]" << endl;
+    }
     MPI_Finalize();
 }
 

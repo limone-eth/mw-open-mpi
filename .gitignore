@@ -4,3 +4,33 @@
 parser*
 files/NYPD_Motor_Vehicle_Collisions.csv
 /files
+CMakeCache.txt
+	CMakeFiles/CMakeDirectoryInformation.cmake
+	CMakeFiles/CMakeOutput.log
+	CMakeFiles/Makefile.cmake
+	CMakeFiles/Makefile2
+	CMakeFiles/TargetDirectories.txt
+	CMakeFiles/cmake.check_cache
+	CMakeFiles/mw-open-mpi-exec.dir/CXX.includecache
+	CMakeFiles/mw-open-mpi-exec.dir/DependInfo.cmake
+	CMakeFiles/mw-open-mpi-exec.dir/build.make
+	CMakeFiles/mw-open-mpi-exec.dir/cmake_clean.cmake
+	CMakeFiles/mw-open-mpi-exec.dir/depend.internal
+	CMakeFiles/mw-open-mpi-exec.dir/depend.make
+	CMakeFiles/mw-open-mpi-exec.dir/flags.make
+	CMakeFiles/mw-open-mpi-exec.dir/link.txt
+	CMakeFiles/mw-open-mpi-exec.dir/main.cc.o
+	CMakeFiles/mw-open-mpi-exec.dir/progress.make
+	CMakeFiles/mw-open-mpi.dir/CXX.includecache
+	CMakeFiles/mw-open-mpi.dir/DependInfo.cmake
+	CMakeFiles/mw-open-mpi.dir/build.make
+	CMakeFiles/mw-open-mpi.dir/cmake_clean.cmake
+	CMakeFiles/mw-open-mpi.dir/depend.internal
+	CMakeFiles/mw-open-mpi.dir/depend.make
+	CMakeFiles/mw-open-mpi.dir/flags.make
+	CMakeFiles/mw-open-mpi.dir/link.txt
+	CMakeFiles/mw-open-mpi.dir/main.cc.o
+	CMakeFiles/mw-open-mpi.dir/progress.make
+	CMakeFiles/progress.marks
+	mw-open-mpi-exec
+    /CMakeFiles

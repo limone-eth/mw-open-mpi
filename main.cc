@@ -182,9 +182,9 @@ int main() {
     int *local_lethal_accidents_per_week = new int[WEEKS]{0}; // initializing array with all 0s
     vector<int> global_lethal_accidents_per_week(WEEKS, 0);
     std::string local_current_date;
-    omp_set_dynamic(0);
-    omp_set_num_threads(NUM_THREADS);
-    int threads = omp_get_num_threads();
+    int threads = omp_get_max_threads();
+    omp_set_num_threads(threads);
+    
     int w;
 
     // Compute number of lethal accidents per week

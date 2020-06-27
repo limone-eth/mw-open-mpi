@@ -18,7 +18,7 @@
 using namespace std;
 using namespace boost::gregorian;
 
-int NUM_THREADS = 2;
+int NUM_THREADS = 4;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 #define ROWS 955928
@@ -182,7 +182,8 @@ int main() {
     int *local_lethal_accidents_per_week = new int[WEEKS]{0}; // initializing array with all 0s
     vector<int> global_lethal_accidents_per_week(WEEKS, 0);
     std::string local_current_date;
-    int threads = omp_get_max_threads();
+    omp_set_num_threads(NUM_THREADS);
+    int threads = omp_get_num_threads();
     int w;
 
     // Compute number of lethal accidents per week

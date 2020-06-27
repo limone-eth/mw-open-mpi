@@ -449,22 +449,22 @@ int main() {
     MPI_Reduce(&local_timer_start, &global_start, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     MPI_Reduce(&local_timer_end, &global_end, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-    MPI_Reduce(&local_performance[0], &global_pi[0], 6, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_performance[0], &global_pi[0], 5, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if(PROCESS_RANK == 0){
         cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
-        for (i = 0; i < 6; ++i)
+        for (i = 0; i < 5; ++i)
             global_pi[i] -= global_start;
 
-        for (i = 5; i > 0; --i)
+        for (i = 4; i > 0; --i)
             global_pi[i] -= global_pi[i - 1];
 
 
         // Printing performance indicators as array object
         cout << "[" << process_name << ", " << SIZE << ", " << threads << ", ";
 
-        for (i = 0; i < 6; ++i)
+        for (i = 0; i < 5; ++i)
             cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;

@@ -1,0 +1,3 @@
+/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles/rebuild_cache.dir
+/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles/edit_cache.dir
+/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles/mw-open-mpi-exec.dir

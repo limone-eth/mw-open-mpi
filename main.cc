@@ -133,12 +133,12 @@ int main() {
 
     // File reading ends here, get time
     local_performance[0] = MPI_Wtime();
-
+    cout << "Works so far";
     // scatter data
     MPI_Scatter(&car_accidents[0][0], ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, &scattered_car_accidents[0][0],
                 ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, 0, MPI_COMM_WORLD);
     freeMatrix<char>(&car_accidents);
-
+    cout << "Works so far";
     // At this point, each process has a piece of the file on which to operate
     local_performance[1] = MPI_Wtime();
 

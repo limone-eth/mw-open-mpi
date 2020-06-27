@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++   -Xclang -fopenmp -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/mw-open-mpi-exec.dir/main.cc.o  -o mw-open-mpi-exec  /usr/local/Cellar/open-mpi/4.0.3/lib/libmpi.dylib /usr/local/lib/libomp.dylib 

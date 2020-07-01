@@ -291,12 +291,12 @@ int main() {
     // local variables
     int local_accidents_per_factor[global_factors.size()];
     int local_lethal_accidents_per_factor[global_factors.size()];
-    for (i = 0; i < global_factors.size(); i++) {
+    for (i = 0; i < global_factors.size()*SIZE; i++) {
         local_accidents_per_factor[i] = 0;
         local_lethal_accidents_per_factor[i] = 0;
     }
     set<string> already_processed_factors;
-#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
+#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()*SIZE], local_lethal_accidents_per_factor[:global_factors.size()*SIZE])
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {

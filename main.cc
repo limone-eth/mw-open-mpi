@@ -331,10 +331,10 @@ int main() {
      *
      * @@@@@@@@
      */
-    /*
+
     // Query 3 start
     local_performance[4] = MPI_Wtime();
-
+    /*
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {

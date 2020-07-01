@@ -265,7 +265,7 @@ int main() {
     // Populate global factors variable
     char **global_factors_nn;
 
-    allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE * SIZE, MAX_CF_LENGHT, '\0');
+    allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE, MAX_CF_LENGHT, '\0');
 
     MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0],
                   MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);

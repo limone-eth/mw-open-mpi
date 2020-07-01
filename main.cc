@@ -255,10 +255,10 @@ int main() {
         i++;
     }
     factors.clear();
-    cout << "LOCAL FACTORS" << endl;
+    /*cout << "LOCAL FACTORS" << endl;
     for (i = 0; i < MAX_FACTORS_SIZE; i++){
         cout << process_name << " - " << local_factors[i] << endl;
-    }
+    }*/
 
     // Populate global factors variable
     char **global_factors_nn;
@@ -281,6 +281,7 @@ int main() {
 
     // setting an integer index for each factor
     for (auto &f: global_factors) {
+        cout << process_name << " - " << f.first;
         f.second = f.second + i;
         i++;
     }

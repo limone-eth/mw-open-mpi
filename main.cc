@@ -244,8 +244,6 @@ int main() {
 
     MPI_Allreduce(&LOCAL_FACTORS_SIZE, &MAX_FACTORS_SIZE, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
-    cout << process_name << " - local_factors_size: " << LOCAL_FACTORS_SIZE << endl;
-    cout << process_name << " - max_factors_size: " << MAX_FACTORS_SIZE << endl;
     // Convert factors to contiguous array
     char **local_factors;
 
@@ -287,6 +285,8 @@ int main() {
         f.second = f.second + i;
         i++;
     }
+
+    cout << process_name << " - global_factors_size: " << global_factors << endl;
 
     // local variables
     int local_accidents_per_factor[global_factors.size()];

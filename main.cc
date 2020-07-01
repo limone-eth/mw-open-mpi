@@ -230,8 +230,8 @@ int main() {
 
     // storing local factors
     set<string> factors;
-    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
-        for (int j = 18; j < 23; ++j) {
+    for (i = 0; i < ROWS_PER_PROCESS; i++) {
+        for (int j = 18; j < 23; j++) {
             factors.insert(local_dataset[i][j]);
         }
     }

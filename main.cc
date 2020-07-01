@@ -489,11 +489,11 @@ int main() {
 
         cout << global_end - global_start << "]" << endl;
     }
-    cout << process_name << " - MPI_Finalize()" << endl;
+    // cout << process_name << " - MPI_Finalize()" << endl;
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
-    cout << process_name << " - Finalized" << endl;
+    //cout << process_name << " - Finalized" << endl;
 }
 
 template<typename T>

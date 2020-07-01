@@ -231,9 +231,8 @@ int main() {
     // storing local factors
     set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
-        for (int j = 19; j < 23; j++) {
-            cout << process_name << " - " << local_dataset[i][18] << endl;
-            if (!local_dataset[i][j].empty()){
+        for (int j = 18; j < 23; j++) {
+            if (!local_dataset[i][j].empty() && local_dataset[i][j] != "0"){
                 // cout << process_name << " - " << local_dataset[i][j] << endl;
                 factors.insert(local_dataset[i][j]);
             }
@@ -299,7 +298,7 @@ int main() {
     int size = global_factors.size()*SIZE;
 #pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:size], local_lethal_accidents_per_factor[:size])
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
-        for (int j = 19; j < 23; j++) {
+        for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
                 //cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl;
                 local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;

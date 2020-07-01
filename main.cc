@@ -26,7 +26,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define COLUMNS 29
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
-#define PRINT_RESULTS false
+#define PRINT_RESULTS true
 
 void normalize(string *str_line);
 
@@ -347,7 +347,7 @@ int main() {
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 
-    /*
+
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -435,7 +435,7 @@ int main() {
     //Query3 end
     */
     local_performance[5] = MPI_Wtime();
-    /*if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
+    if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
         for (const auto &b: global_boroughs) {
@@ -454,14 +454,14 @@ int main() {
     freeMatrix(&local_boroughs);
     freeMatrix(&local_accidents_per_borough_per_week);
     freeMatrix(&global_boroughs_nn);
-    */
+
     // Computation end
     double local_timer_end = MPI_Wtime();
 
     // Reduce timers to get global execution times
     auto * global_pi = new double[5]{0.0};
 
-    /*double global_start = 0.0;
+    double global_start = 0.0;
     double global_end = 0.0;
 
     MPI_Reduce(&local_timer_start, &global_start, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
@@ -486,7 +486,7 @@ int main() {
             cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;
-    }*/
+    }
     cout << process_name <<" - MPI_Finalize()" << endl;
     #pragma omp barrier
     MPI_Finalize();

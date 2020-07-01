@@ -250,7 +250,7 @@ int main() {
 
     i = 0;
     for (auto elem : factors){
-        if (elem.length > 1){
+        if (elem.length() > 1){
             cout << process_name << " - elem: " << elem << endl;
             elem.copy(local_factors[i], elem.length() + 1);
         }

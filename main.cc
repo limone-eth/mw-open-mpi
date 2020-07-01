@@ -490,7 +490,7 @@ int main() {
     }
     cout << process_name <<" - MPI_Finalize()" << endl;
 
-    MPI_Barrier(MPI_COMM_WORLD)
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
     cout << process_name <<" - Finalized" << endl;
 }

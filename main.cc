@@ -451,7 +451,7 @@ int main() {
 
     MPI_Reduce(&local_performance[0], &global_pi[0], 5, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     cout << process_name << " - Printing results..." << endl;
-    if(PROCESS_RANK == 0){
+    //if(PROCESS_RANK == 0){
         cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
         for (i = 0; i < 5; ++i)
@@ -468,7 +468,7 @@ int main() {
             cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;
-    }
+    //}
     cout << process_name <<" - MPI_Finalize()" << endl;
     MPI_Finalize();
     cout << process_name <<" - Finalized" << endl;

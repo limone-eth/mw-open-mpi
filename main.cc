@@ -295,16 +295,16 @@ int main() {
         local_lethal_accidents_per_factor[i] = 0;
     }
     set<string> already_processed_factors;
-#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()*SIZE], local_lethal_accidents_per_factor[:global_factors.size()*SIZE])
+    int size = global_factors.size()*SIZE;
+#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:size], local_lethal_accidents_per_factor[:size])
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
-                // If the factor has not been already processed for that line, do the sum
-                if ( local_dataset[i][j] != "0") {
-                    local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
-                    local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
-                            local_dataset[i][11] != "0" ? 1 : 0;
-                }
+                cout << process_name << " - " << global_factors[local_dataset[i][j]] << endl;
+                local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
+                local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
+                        local_dataset[i][11] != "0" ? 1 : 0;
+
             }
         }
         already_processed_factors.clear();

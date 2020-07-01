@@ -311,12 +311,10 @@ int main() {
     vector<int> global_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
     vector<int> global_lethal_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
 
-    cout << process_name << " - MPI REDUCE" << endl;
     // Reduce local array to global correspondents
     MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], GLOBAL_FACTORS_SIZE, MPI_INT, MPI_SUM,
                0, MPI_COMM_WORLD);
 
-    cout << process_name << " - MPI REDUCE 2" << endl;
     MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], GLOBAL_FACTORS_SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
@@ -345,10 +343,11 @@ int main() {
      * @@@@@@@@
      */
 
+    cout << process_name << "BEFORE QUERY 3" << endl;
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 
-
+    /*
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -434,7 +433,7 @@ int main() {
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
                    &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     //Query3 end
-
+    */
     local_performance[5] = MPI_Wtime();
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;

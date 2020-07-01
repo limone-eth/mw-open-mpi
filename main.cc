@@ -300,7 +300,7 @@ int main() {
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1) {
-                //cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl;
+                cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl;
                 local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                 local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
                         local_dataset[i][11] != "0" ? 1 : 0;

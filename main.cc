@@ -281,7 +281,7 @@ int main() {
 
     // setting an integer index for each factor
     for (auto &f: global_factors) {
-        cout << process_name << " - " << f.first;
+        cout << process_name << " - " << f.first << endl;
         f.second = f.second + i;
         i++;
     }

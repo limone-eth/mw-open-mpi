@@ -324,8 +324,8 @@ int main() {
         cout << endl;
     }
 
-    freeMatrix<char>(&local_factors);
-    freeMatrix<char>(&global_factors_nn);
+    freeMatrix<char>(local_factors);
+    freeMatrix<char>(global_factors_nn);
 
     /*
      * @@@@@@@@
@@ -441,9 +441,9 @@ int main() {
         cout << endl;
     }
 
-    freeMatrix<char>(&local_boroughs);
-    freeMatrix<char>(&local_accidents_per_borough_per_week);
-    freeMatrix<char>(&global_boroughs);
+    freeMatrix<char>(local_boroughs);
+    freeMatrix<char>(local_accidents_per_borough_per_week);
+    freeMatrix<char>(global_boroughs);
 
     // Computation end
     double local_timer_end = MPI_Wtime();

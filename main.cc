@@ -331,7 +331,7 @@ int main() {
      *
      * @@@@@@@@
      */
-
+    /*
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 
@@ -420,6 +420,7 @@ int main() {
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
                    &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     //Query3 end
+     */
     local_performance[5] = MPI_Wtime();
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
@@ -451,7 +452,7 @@ int main() {
 
     MPI_Reduce(&local_performance[0], &global_pi[0], 5, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     cout << process_name << " - Printing results..." << endl;
-    //if(PROCESS_RANK == 0){
+    if(PROCESS_RANK == 0){
         cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
         for (i = 0; i < 5; ++i)
@@ -468,7 +469,7 @@ int main() {
             cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;
-    //}
+    }
     cout << process_name <<" - MPI_Finalize()" << endl;
     #pragma omp barrier
     MPI_Finalize();

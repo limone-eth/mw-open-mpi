@@ -1,4 +1,4 @@
-# Install script for directory: /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi
+# Install script for directory: /Users/simonestaffa/Desktop/MW/mw-open-mpi
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/simonestaffa/Desktop/MW/mw-open-mpi/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

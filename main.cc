@@ -339,7 +339,7 @@ int main() {
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 
-    /*
+
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -446,7 +446,7 @@ int main() {
     freeMatrix(&local_boroughs);
     freeMatrix(&local_accidents_per_borough_per_week);
     freeMatrix(&global_boroughs_nn);
-    */
+
     // Computation end
     double local_timer_end = MPI_Wtime();
 

@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CarAccident.cpp
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CarAccident.cpp
 CarAccident.h
-/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CarAccident.h
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CarAccident.h
 
-/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CarAccident.h
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CarAccident.h
 string
 -
 
-/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/main.cc
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/main.cc
 boost/date_time/gregorian/gregorian.hpp
 -
 iostream
@@ -44,7 +44,7 @@ map
 set
 -
 CarAccident.cpp
-/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CarAccident.cpp
+/Users/simonestaffa/Desktop/MW/mw-open-mpi/CarAccident.cpp
 
 /usr/local/include/boost/algorithm/string/case_conv.hpp
 boost/algorithm/string/config.hpp

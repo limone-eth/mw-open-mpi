@@ -43,9 +43,6 @@ default_target: all
 # Produce verbose output by default.
 VERBOSE = 1
 
-# Command-line flag to silence nested $(MAKE).
-$(VERBOSE)MAKESILENT = -s
-
 # Suppress display of executed commands.
 $(VERBOSE).SILENT:
 
@@ -62,19 +59,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/local/Cellar/cmake/3.17.2/bin/cmake
+CMAKE_COMMAND = /usr/local/Cellar/cmake/3.17.0_1/bin/cmake
 
 # The command to remove a file.
-RM = /usr/local/Cellar/cmake/3.17.2/bin/cmake -E rm -f
+RM = /usr/local/Cellar/cmake/3.17.0_1/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi
+CMAKE_SOURCE_DIR = /Users/simonestaffa/Desktop/MW/mw-open-mpi
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi
+CMAKE_BINARY_DIR = /Users/simonestaffa/Desktop/MW/mw-open-mpi
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -82,7 +79,7 @@ CMAKE_BINARY_DIR = /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistribut
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/Cellar/cmake/3.17.2/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.17.0_1/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -93,7 +90,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/local/Cellar/cmake/3.17.2/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/Cellar/cmake/3.17.0_1/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -103,14 +100,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles /Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles/progress.marks
+	$(MAKE) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
+	$(MAKE) -f CMakeFiles/Makefile2 clean
 .PHONY : clean
 
 # The main clean target
@@ -120,12 +117,12 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 .PHONY : preinstall/fast
 
 # clear depends
@@ -138,12 +135,12 @@ depend:
 
 # Build rule for target.
 mw-open-mpi-exec: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mw-open-mpi-exec
+	$(MAKE) -f CMakeFiles/Makefile2 mw-open-mpi-exec
 .PHONY : mw-open-mpi-exec
 
 # fast build rule for target.
 mw-open-mpi-exec/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/build
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/build
 .PHONY : mw-open-mpi-exec/fast
 
 main.o: main.cc.o
@@ -152,7 +149,7 @@ main.o: main.cc.o
 
 # target to build an object file
 main.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.o
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.o
 .PHONY : main.cc.o
 
 main.i: main.cc.i
@@ -161,7 +158,7 @@ main.i: main.cc.i
 
 # target to preprocess a source file
 main.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.i
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.i
 .PHONY : main.cc.i
 
 main.s: main.cc.s
@@ -170,7 +167,7 @@ main.s: main.cc.s
 
 # target to generate assembly for a file
 main.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.s
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/main.cc.s
 .PHONY : main.cc.s
 
 # Help Target

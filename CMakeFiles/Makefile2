@@ -39,9 +39,6 @@ default_target: all
 # Produce verbose output by default.
 VERBOSE = 1
 
-# Command-line flag to silence nested $(MAKE).
-$(VERBOSE)MAKESILENT = -s
-
 # Suppress display of executed commands.
 $(VERBOSE).SILENT:
 
@@ -58,19 +55,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /usr/local/Cellar/cmake/3.17.2/bin/cmake
+CMAKE_COMMAND = /usr/local/Cellar/cmake/3.17.0_1/bin/cmake
 
 # The command to remove a file.
-RM = /usr/local/Cellar/cmake/3.17.2/bin/cmake -E rm -f
+RM = /usr/local/Cellar/cmake/3.17.0_1/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi
+CMAKE_SOURCE_DIR = /Users/simonestaffa/Desktop/MW/mw-open-mpi
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi
+CMAKE_BINARY_DIR = /Users/simonestaffa/Desktop/MW/mw-open-mpi
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -95,16 +92,16 @@ clean: CMakeFiles/mw-open-mpi-exec.dir/clean
 
 # All Build rule for target.
 CMakeFiles/mw-open-mpi-exec.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles --progress-num=1,2 "Built target mw-open-mpi-exec"
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/depend
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles --progress-num=1,2 "Built target mw-open-mpi-exec"
 .PHONY : CMakeFiles/mw-open-mpi-exec.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/mw-open-mpi-exec.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/mw-open-mpi-exec.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Moro/Desktop/POLIMI/MiddlewareTechnologiesforDistributedSystems/Progetto/OpenMPI/mw-open-mpi/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/mw-open-mpi-exec.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/simonestaffa/Desktop/MW/mw-open-mpi/CMakeFiles 0
 .PHONY : CMakeFiles/mw-open-mpi-exec.dir/rule
 
 # Convenience name for target.
@@ -114,7 +111,7 @@ mw-open-mpi-exec: CMakeFiles/mw-open-mpi-exec.dir/rule
 
 # clean rule for target.
 CMakeFiles/mw-open-mpi-exec.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/clean
+	$(MAKE) -f CMakeFiles/mw-open-mpi-exec.dir/build.make CMakeFiles/mw-open-mpi-exec.dir/clean
 .PHONY : CMakeFiles/mw-open-mpi-exec.dir/clean
 
 #=============================================================================

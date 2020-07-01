@@ -281,7 +281,6 @@ int main() {
 
     // setting an integer index for each factor
     for (auto &f: global_factors) {
-        cout << process_name << " - " << f.first << endl;
         f.second = f.second + i;
         i++;
     }
@@ -289,8 +288,8 @@ int main() {
     cout << process_name << " - global_factors_size: " << global_factors.size() << endl;
 
     // local variables
-    int local_accidents_per_factor[global_factors.size()];
-    int local_lethal_accidents_per_factor[global_factors.size()];
+    int local_accidents_per_factor[global_factors.size()*SIZE];
+    int local_lethal_accidents_per_factor[global_factors.size()*SIZE];
     for (i = 0; i < global_factors.size()*SIZE; i++) {
         local_accidents_per_factor[i] = 0;
         local_lethal_accidents_per_factor[i] = 0;

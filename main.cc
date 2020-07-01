@@ -324,6 +324,9 @@ int main() {
         cout << endl;
     }
 
+    freeMatrix<char>(&local_factors);
+    freeMatrix<char>(&global_factors_nn);
+
     /*
      * @@@@@@@@
      *
@@ -334,7 +337,7 @@ int main() {
 
     // Query 3 start
     local_performance[4] = MPI_Wtime();
-    /*
+
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -420,9 +423,9 @@ int main() {
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
                    &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     //Query3 end
-     */
+
     local_performance[5] = MPI_Wtime();
-    /*if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
+    if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
         for (const auto &b: global_boroughs) {
@@ -436,7 +439,11 @@ int main() {
             }
         }
         cout << endl;
-    }*/
+    }
+
+    freeMatrix<char>(&local_boroughs);
+    freeMatrix<char>(&local_accidents_per_borough_per_week);
+    freeMatrix<char>(&global_boroughs);
 
     // Computation end
     double local_timer_end = MPI_Wtime();

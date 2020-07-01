@@ -232,6 +232,7 @@ int main() {
     set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
+            cout << process_name << " - " << local_dataset[i][j] << endl;
             factors.insert(local_dataset[i][j]);
         }
     }
@@ -250,10 +251,7 @@ int main() {
 
     i = 0;
     for (auto elem : factors){
-        if (elem.length() > 1){
-            cout << process_name << " - elem: " << elem << endl;
-            elem.copy(local_factors[i], elem.length() + 1);
-        }
+        elem.copy(local_factors[i], elem.length() + 1);
         i++;
     }
     factors.clear();

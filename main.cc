@@ -27,7 +27,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define COLUMNS 29
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
-#define PRINT_RESULTS false
+#define PRINT_RESULTS true
 
 void normalize(string *str_line);
 
@@ -257,10 +257,10 @@ int main() {
         i++;
     }
     factors.clear();
-    cout << "LOCAL FACTORS" << endl;
+    /*cout << "LOCAL FACTORS" << endl;
     for (i = 0; i < MAX_FACTORS_SIZE; i++){
         cout << process_name << " - " << local_factors[i] << endl;
-    }
+    }*/
 
     // Populate global factors variable
     char **global_factors_nn;

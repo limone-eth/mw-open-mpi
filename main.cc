@@ -310,8 +310,8 @@ int main() {
         already_processed_factors.clear();
     }
 
-    vector<int> global_accidents_per_factor(global_factors.size(), 0);
-    vector<int> global_lethal_accidents_per_factor(global_factors.size(), 0);
+    vector<int> global_accidents_per_factor(global_factors.size()*SIZE, 0);
+    vector<int> global_lethal_accidents_per_factor(global_factors.size()*SIZE, 0);
 
     // Reduce local array to global correspondents
     MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size() * SIZE, MPI_INT, MPI_SUM,

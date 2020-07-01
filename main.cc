@@ -256,6 +256,10 @@ int main() {
     }
     factors.clear();
 
+    for (i = 0; i < MAX_FACTORS_SIZE; i++){
+        cout << local_factors[i] << endl;
+    }
+
     // Populate global factors variable
     char **global_factors_nn;
 

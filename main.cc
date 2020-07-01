@@ -441,7 +441,7 @@ int main() {
     double local_timer_end = MPI_Wtime();
 
     // Reduce timers to get global execution times
-    auto * global_pi = new double[6]{0.0};
+    auto * global_pi = new double[5]{0.0};
 
     double global_start = 0.0;
     double global_end = 0.0;

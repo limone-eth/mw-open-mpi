@@ -178,7 +178,7 @@ int main() {
      */
 
     // Query 1 start
-    //local_performance[3] = MPI_Wtime();
+    local_performance[3] = MPI_Wtime();
 
     /*const int WEEKS = 51;
 

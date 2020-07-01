@@ -115,7 +115,7 @@ int main() {
     char **scattered_car_accidents;
 
     allocateMatrix<char>(&car_accidents, ROWS, MAX_LINE_LENGHT, '\0');
-    allocateMatrix<char>(&scattered_car_accidents, ROWS, MAX_LINE_LENGHT, '\0');
+    allocateMatrix<char>(&scattered_car_accidents, ROWS_PER_PROCESS, MAX_LINE_LENGHT, '\0');
 
     string data(CSV_FILE);
 

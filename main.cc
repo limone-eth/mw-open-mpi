@@ -490,11 +490,8 @@ int main() {
     }
     cout << process_name <<" - MPI_Finalize()" << endl;
 
-    MPI_Barrier()
+    MPI_Barrier(MPI_COMM_WORLD)
     MPI_Finalize();
-    if (PROCESS_RANK == 0){
-        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-    }
     cout << process_name <<" - Finalized" << endl;
 }
 

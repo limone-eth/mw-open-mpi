@@ -450,11 +450,11 @@ int main() {
         }
         cout << endl;
     }
-
+    /*
     freeMatrix(&local_boroughs);
     freeMatrix(&local_accidents_per_borough_per_week);
     freeMatrix(&global_boroughs_nn);
-
+    */
     // Computation end
     double local_timer_end = MPI_Wtime();
 

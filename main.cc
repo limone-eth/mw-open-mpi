@@ -229,7 +229,7 @@ int main() {
     local_performance[3] = MPI_Wtime();
 
     // storing local factors
-    /*set<string> factors;
+    set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         for (int j = 18; j < 23; ++j) {
             factors.insert(local_dataset[i][j]);
@@ -241,6 +241,8 @@ int main() {
 
     MPI_Allreduce(&LOCAL_FACTORS_SIZE, &MAX_FACTORS_SIZE, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
+    cout << process_name << " - local_factors_size: " << LOCAL_FACTORS_SIZE << endl;
+    cout << process_name << " - max_factors_size: " << MAX_FACTORS_SIZE << endl;
     // Convert factors to contiguous array
     char **local_factors;
 

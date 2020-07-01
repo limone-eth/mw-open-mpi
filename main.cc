@@ -10,6 +10,7 @@
 #include <time.h>
 #include <omp.h>
 #include <mpi.h>
+#include <thread>
 #include <map>
 #include <set>
 #include "CarAccident.cpp"
@@ -488,6 +489,7 @@ int main() {
         cout << global_end - global_start << "]" << endl;
     }
     cout << process_name <<" - MPI_Finalize()" << endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
     #pragma omp barrier
     MPI_Finalize();
     cout << process_name <<" - Finalized" << endl;

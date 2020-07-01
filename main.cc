@@ -461,7 +461,7 @@ int main() {
     // Reduce timers to get global execution times
     auto * global_pi = new double[5]{0.0};
 
-    double global_start = 0.0;
+    /*double global_start = 0.0;
     double global_end = 0.0;
 
     MPI_Reduce(&local_timer_start, &global_start, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
@@ -486,7 +486,7 @@ int main() {
             cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;
-    }
+    }*/
     cout << process_name <<" - MPI_Finalize()" << endl;
     #pragma omp barrier
     MPI_Finalize();

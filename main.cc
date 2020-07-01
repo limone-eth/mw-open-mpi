@@ -286,7 +286,7 @@ int main() {
         i++;
     }
 
-    cout << process_name << " - global_factors_size: " << global_factors.size() << endl;
+    // cout << process_name << " - global_factors_size: " << global_factors.size() << endl;
 
     // local variables
     int *local_accidents_per_factor = new int[global_factors.size()]{0};
@@ -343,7 +343,7 @@ int main() {
      * @@@@@@@@
      */
 
-    cout << process_name << "BEFORE QUERY 3" << endl;
+    //cout << process_name << "BEFORE QUERY 3" << endl;
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 

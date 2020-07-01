@@ -271,7 +271,7 @@ int main() {
     // Create map to join all the local factors in a single one
     map<string, int> global_factors;
 
-    for (i = 0; i < MAX_FACTORS_SIZE; i++) {
+    for (i = 0; i < MAX_FACTORS_SIZE * SIZE; i++) {
         if ((global_factors.find(global_factors_nn[i]) == global_factors.end()) && strlen(global_factors_nn[i])) {
             global_factors[global_factors_nn[i]] = 0;
         }
@@ -297,7 +297,7 @@ int main() {
     }
     set<string> already_processed_factors;
 #pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:global_factors.size()], local_lethal_accidents_per_factor[:global_factors.size()])
-    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+    for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty()) {
                 // If the factor has not been already processed for that line, do the sum
@@ -305,7 +305,6 @@ int main() {
                     local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                     local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
                             local_dataset[i][11] != "0" ? 1 : 0;
-                    already_processed_factors.insert(local_dataset[i][j]);
                 }
             }
         }
@@ -316,9 +315,9 @@ int main() {
     vector<int> global_lethal_accidents_per_factor(global_factors.size(), 0);
 
     // Reduce local array to global correspondents
-    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size(), MPI_INT, MPI_SUM,
+    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size() * SIZE, MPI_INT, MPI_SUM,
                0, MPI_COMM_WORLD);
-    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size(),
+    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size() * SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {

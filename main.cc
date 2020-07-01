@@ -37,11 +37,11 @@ int freeMatrix(T ***set);
 template<typename T>
 int allocateMatrix(T ***set, int rows, int columns, T value);
 
-bool is_in_array(string value, vector<string> array) {
+bool is_in_array(string value, vector <string> array) {
     return find(array.begin(), array.end(), value) != array.end();
 }
 
-ostream &operator<<(ostream &os, const std::pair<std::string, std::string> &p) {
+ostream &operator<<(ostream &os, const std::pair <std::string, std::string> &p) {
     os << p.first << ' ' << p.second << ' ';
     return os;
 }
@@ -51,7 +51,7 @@ int get_week(std::string date) {
     std::string delimiter = "/";
     size_t pos = 0;
     std::string token;
-    vector<string> split;
+    vector <string> split;
     std::string s = date + "/";
     while ((pos = s.find(delimiter)) != std::string::npos) {
         token = s.substr(0, pos);
@@ -87,7 +87,7 @@ int main() {
 
     MPI_Comm_size(MPI_COMM_WORLD, &SIZE);
     MPI_Comm_rank(MPI_COMM_WORLD, &PROCESS_RANK);
-    if (PROCESS_RANK == 0){
+    if (PROCESS_RANK == 0) {
         cout << "AVAILABLE PROCESSES: " << SIZE << endl;
     }
 
@@ -103,13 +103,13 @@ int main() {
     tzset();
 
     // Local performance indicators will be then used to evaluate global performance
-    auto * local_performance = new double[5]{0.0};
+    auto *local_performance = new double[5]{0.0};
 
     double local_timer_start = MPI_Wtime();
 
     // How many rows each process should process
     int ROWS_PER_PROCESS = ROWS / SIZE;
-    
+
     // empty dataset
     char **car_accidents;
     char **scattered_car_accidents;
@@ -122,31 +122,33 @@ int main() {
     ifstream in(data.c_str());
     if (!in.is_open()) return 1;
 
-    // LOADING DATASET
-    string line;
-    ifstream fin(CSV_FILE, ios::in);
 
-    getline(fin, line); // reading header
+    if (PROCESS_RANK == 0) {
+        // LOADING DATASET
+        string line;
+        ifstream fin(CSV_FILE, ios::in);
+        getline(fin, line); // reading header
 
-    for (int i = 0; i < ROWS; ++i) {
-        getline(fin, line);
-        line.copy(car_accidents[i], line.size() + 1);
+        for (int i = 0; i < ROWS; ++i) {
+            getline(fin, line);
+            line.copy(car_accidents[i], line.size() + 1);
+        }
+        fin.close();
     }
-    fin.close();
 
     // File reading ends here, get time
     local_performance[0] = MPI_Wtime();
-    
+
     // scatter data
     MPI_Scatter(&car_accidents[0][0], ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, &scattered_car_accidents[0][0],
                 ROWS_PER_PROCESS * MAX_LINE_LENGHT, MPI_CHAR, 0, MPI_COMM_WORLD);
     freeMatrix<char>(&car_accidents);
-    
+
     // At this point, each process has a piece of the file on which to operate
     local_performance[1] = MPI_Wtime();
 
     // Prepare dataset
-    vector<vector<string> > local_dataset(ROWS_PER_PROCESS, vector<string>(COLUMNS));
+    vector <vector<string>> local_dataset(ROWS_PER_PROCESS, vector<string>(COLUMNS));
 
     int i = 0;
     int j = 0;
@@ -165,7 +167,7 @@ int main() {
         i++;
     }
     freeMatrix<char>(&scattered_car_accidents);
-    
+
     // The dataset is prepared into the local variables
     local_performance[2] = MPI_Wtime();
 
@@ -187,7 +189,7 @@ int main() {
     std::string local_current_date;
     int threads = omp_get_max_threads();
     omp_set_num_threads(threads);
-    
+
     int w;
     /*
     // Compute number of lethal accidents per week
@@ -460,7 +462,7 @@ int main() {
     double local_timer_end = MPI_Wtime();
 
     // Reduce timers to get global execution times
-    auto * global_pi = new double[5]{0.0};
+    auto *global_pi = new double[5]{0.0};
 
     double global_start = 0.0;
     double global_end = 0.0;
@@ -470,7 +472,7 @@ int main() {
 
     MPI_Reduce(&local_performance[0], &global_pi[0], 5, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     cout << process_name << " - Printing results..." << endl;
-    if(PROCESS_RANK == 0){
+    if (PROCESS_RANK == 0) {
         cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
         for (i = 0; i < 5; ++i)
@@ -484,15 +486,15 @@ int main() {
         cout << "[" << process_name << ", " << SIZE << ", " << threads << ", ";
 
         for (i = 0; i < 5; ++i)
-            cout << std::setprecision (5) << fixed << global_pi[i] << ", ";
+            cout << std::setprecision(5) << fixed << global_pi[i] << ", ";
 
         cout << global_end - global_start << "]" << endl;
     }
-    cout << process_name <<" - MPI_Finalize()" << endl;
+    cout << process_name << " - MPI_Finalize()" << endl;
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
-    cout << process_name <<" - Finalized" << endl;
+    cout << process_name << " - Finalized" << endl;
 }
 
 template<typename T>

@@ -273,7 +273,8 @@ int main() {
     // Create map to join all the local factors in a single one
     map<string, int> global_factors;
 
-    for (i = 0; i < MAX_FACTORS_SIZE * SIZE; ++i) {
+    for (i = 0; i < MAX_FACTORS_SIZE; ++i) {
+        cout << global_factors_nn[i] << endl;
         if ((global_factors.find(global_factors_nn[i]) == global_factors.end()) && strlen(global_factors_nn[i])) {
             global_factors[global_factors_nn[i]] = 0;
         }

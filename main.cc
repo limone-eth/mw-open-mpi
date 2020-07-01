@@ -24,7 +24,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 #define ROWS 955928
 #define COLUMNS 29
-#define MAX_CF_LENGHT 100
+#define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
 #define PRINT_RESULTS false
 
@@ -310,16 +310,16 @@ int main() {
         already_processed_factors.clear();
     }
 
-    vector<int> global_accidents_per_factor(global_factors.size(), 0);
-    vector<int> global_lethal_accidents_per_factor(global_factors.size(), 0);
+    vector<int> global_accidents_per_factor(global_factors.size()*SIZE, 0);
+    vector<int> global_lethal_accidents_per_factor(global_factors.size()*SIZE, 0);
 
     // Reduce local array to global correspondents
-    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size(), MPI_INT, MPI_SUM,
+    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size() * SIZE, MPI_INT, MPI_SUM,
                0, MPI_COMM_WORLD);
-    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size(),
+    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size() * SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    if (PROCESS_RANK == 0) {
+    if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 2 completed -> " << MPI_Wtime() << endl;
 
         cout << "ACCIDENTS AND PERCENTAGE OF L/NL ACCIDENTS PER CONTRIBUTING FACTOR" << endl;

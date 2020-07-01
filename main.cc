@@ -81,7 +81,8 @@ int main() {
     int SIZE;
     int THREAD_SUPPORT;
 
-    MPI_Init_thread(nullptr, nullptr, MPI_THREAD_FUNNELED, &THREAD_SUPPORT);
+    // MPI_Init_thread(nullptr, nullptr, MPI_THREAD_FUNNELED, &THREAD_SUPPORT);
+    MPI_Init(nullptr, nullptr);
 
     MPI_Comm_size(MPI_COMM_WORLD, &SIZE);
     MPI_Comm_rank(MPI_COMM_WORLD, &PROCESS_RANK);

@@ -286,7 +286,7 @@ int main() {
         i++;
     }
 
-    cout << process_name << " - global_factors_size: " << global_factors << endl;
+    cout << process_name << " - global_factors_size: " << global_factors.size() << endl;
 
     // local variables
     int local_accidents_per_factor[global_factors.size()];

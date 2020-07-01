@@ -301,7 +301,7 @@ int main() {
                 local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                 local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
                         local_dataset[i][11] != "0" ? 1 : 0;
-                already_processed_factors.insert(local_dataset[i][j])
+                already_processed_factors.insert(local_dataset[i][j]);
             }
         }
         already_processed_factors.clear();

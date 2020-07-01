@@ -289,11 +289,11 @@ int main() {
     cout << process_name << " - global_factors_size: " << global_factors.size() << endl;
 
     // local variables
-    int *local_accidents_per_factor = new int[global_factors.size()*SIZE]{0};
-    int *local_lethal_accidents_per_factor = new int[global_factors.size()*SIZE]{0};
+    int *local_accidents_per_factor = new int[global_factors.size()]{0};
+    int *local_lethal_accidents_per_factor = new int[global_factors.size()]{0};
     set<string> already_processed_factors;
-    int size = global_factors.size()*SIZE;
-#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:size], local_lethal_accidents_per_factor[:size])
+    int GLOBAL_FACTORS_SIZE = global_factors.size();
+#pragma omp parallel for default(shared) private(i, j, already_processed_factors) reduction(+: local_accidents_per_factor[:GLOBAL_FACTORS_SIZE], local_lethal_accidents_per_factor[:GLOBAL_FACTORS_SIZE])
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1
@@ -308,16 +308,16 @@ int main() {
         already_processed_factors.clear();
     }
 
-    vector<int> global_accidents_per_factor(global_factors.size()*SIZE, 0);
-    vector<int> global_lethal_accidents_per_factor(global_factors.size()*SIZE, 0);
+    vector<int> global_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
+    vector<int> global_lethal_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
 
     cout << process_name << " - MPI REDUCE" << endl;
     // Reduce local array to global correspondents
-    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size() * SIZE, MPI_INT, MPI_SUM,
+    MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], GLOBAL_FACTORS_SIZE, MPI_INT, MPI_SUM,
                0, MPI_COMM_WORLD);
 
     cout << process_name << " - MPI REDUCE 2" << endl;
-    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size() * SIZE,
+    MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], GLOBAL_FACTORS_SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {

@@ -470,6 +470,7 @@ int main() {
         cout << global_end - global_start << "]" << endl;
     }
     MPI_Finalize();
+    return 0;
 }
 
 template<typename T>

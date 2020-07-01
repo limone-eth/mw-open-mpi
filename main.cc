@@ -229,7 +229,7 @@ int main() {
     local_performance[3] = MPI_Wtime();
 
     // storing local factors
-    set<string> factors;
+    /*set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         for (int j = 18; j < 23; ++j) {
             factors.insert(local_dataset[i][j]);
@@ -339,6 +339,7 @@ int main() {
     // Query 3 start
     local_performance[4] = MPI_Wtime();
 
+    /*
     // storing local boroughs
     vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -445,7 +446,7 @@ int main() {
     freeMatrix(&local_boroughs);
     freeMatrix(&local_accidents_per_borough_per_week);
     freeMatrix(&global_boroughs_nn);
-
+    */
     // Computation end
     double local_timer_end = MPI_Wtime();
 

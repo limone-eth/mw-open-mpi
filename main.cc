@@ -232,10 +232,10 @@ int main() {
     set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 19; j < 23; j++) {
-            //if (local_dataset[i][j].length() > 1){
+            if (!local_dataset[i][j].empty()){
                 // cout << process_name << " - " << local_dataset[i][j] << endl;
                 factors.insert(local_dataset[i][j]);
-            //}
+            }
         }
     }
 

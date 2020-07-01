@@ -190,7 +190,7 @@ int main() {
     omp_set_num_threads(threads);
 
     int w;
-    /*
+
     // Compute number of lethal accidents per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:WEEKS])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
@@ -219,7 +219,7 @@ int main() {
         }
         cout << endl;
     }
-    */
+
     /*
      * @@@@@@@@
      *
@@ -231,7 +231,7 @@ int main() {
     local_performance[3] = MPI_Wtime();
 
     // storing local factors
-    /*set<string> factors;
+    set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1){
@@ -336,7 +336,7 @@ int main() {
 
     freeMatrix(&local_factors);
     freeMatrix(&global_factors_nn);
-    */
+
     /*
      * @@@@@@@@
      *
@@ -351,7 +351,7 @@ int main() {
 
 
     // storing local boroughs
-    /*vector<string> boroughs;
+    vector<string> boroughs;
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         if (!is_in_array(local_dataset[i][2], boroughs) && !local_dataset[i][2].empty()) {
             boroughs.push_back(local_dataset[i][2]);
@@ -435,9 +435,9 @@ int main() {
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
                    &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     //Query3 end
-    */
+
     local_performance[5] = MPI_Wtime();
-    /*if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
+    if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
         for (const auto &b: global_boroughs) {
@@ -456,7 +456,7 @@ int main() {
     freeMatrix(&local_boroughs);
     freeMatrix(&local_accidents_per_borough_per_week);
     freeMatrix(&global_boroughs_nn);
-    */
+
     // Computation end
     double local_timer_end = MPI_Wtime();
 

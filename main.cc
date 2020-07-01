@@ -257,10 +257,10 @@ int main() {
         i++;
     }
     factors.clear();
-    cout << "LOCAL FACTORS" << endl;
+    /*cout << "LOCAL FACTORS" << endl;
     for (i = 0; i < MAX_FACTORS_SIZE; i++){
         cout << process_name << " - " << local_factors[i] << endl;
-    }
+    }*/
 
     // Populate global factors variable
     char **global_factors_nn;

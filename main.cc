@@ -314,6 +314,8 @@ int main() {
     // Reduce local array to global correspondents
     MPI_Reduce(&local_accidents_per_factor[0], &global_accidents_per_factor[0], global_factors.size() * SIZE, MPI_INT, MPI_SUM,
                0, MPI_COMM_WORLD);
+
+    cout << process_name << " - MPI REDUCE 2" << endl;
     MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], global_factors.size() * SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 

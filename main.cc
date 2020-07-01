@@ -230,7 +230,7 @@ int main() {
     local_performance[3] = MPI_Wtime();
 
     // storing local factors
-    set<string> factors;
+    /*set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1){
@@ -256,10 +256,10 @@ int main() {
         i++;
     }
     factors.clear();
-    /*cout << "LOCAL FACTORS" << endl;
+    cout << "LOCAL FACTORS" << endl;
     for (i = 0; i < MAX_FACTORS_SIZE; i++){
         cout << process_name << " - " << local_factors[i] << endl;
-    }*/
+    }
 
     // Populate global factors variable
     char **global_factors_nn;
@@ -282,7 +282,7 @@ int main() {
 
     // setting an integer index for each factor
     for (auto &f: global_factors) {
-        cout << process_name << " - " << f.first << endl;
+        // cout << process_name << " - " << f.first << endl;
         f.second = f.second + i;
         i++;
     }
@@ -335,7 +335,7 @@ int main() {
 
     freeMatrix(&local_factors);
     freeMatrix(&global_factors_nn);
-
+    */
     /*
      * @@@@@@@@
      *

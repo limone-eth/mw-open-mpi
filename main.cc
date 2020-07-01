@@ -422,7 +422,7 @@ int main() {
     //Query3 end
      */
     local_performance[5] = MPI_Wtime();
-    if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
+    /*if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
         cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
         for (const auto &b: global_boroughs) {
@@ -436,7 +436,7 @@ int main() {
             }
         }
         cout << endl;
-    }
+    }*/
 
     // Computation end
     double local_timer_end = MPI_Wtime();

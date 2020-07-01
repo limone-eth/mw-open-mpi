@@ -180,7 +180,7 @@ int main() {
     // Query 1 start
     local_performance[3] = MPI_Wtime();
 
-    /*const int WEEKS = 51;
+    const int WEEKS = 51;
 
     int *local_lethal_accidents_per_week = new int[WEEKS]{0}; // initializing array with all 0s
     vector<int> global_lethal_accidents_per_week(WEEKS, 0);
@@ -189,7 +189,7 @@ int main() {
     omp_set_num_threads(threads);
     
     int w;
-
+    /*
     // Compute number of lethal accidents per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:WEEKS])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {

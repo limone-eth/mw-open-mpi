@@ -470,9 +470,9 @@ int main() {
         cout << global_end - global_start << "]" << endl;
     //}
     cout << process_name <<" - MPI_Finalize()" << endl;
+    #pragma omp barrier
     MPI_Finalize();
     cout << process_name <<" - Finalized" << endl;
-    return 0;
 }
 
 template<typename T>

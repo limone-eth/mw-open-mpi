@@ -249,7 +249,7 @@ int main() {
     // Convert factors to contiguous array
     char **local_factors;
 
-    allocateMatrix(&local_factors, MAX_FACTORS_SIZE, MAX_CF_LENGHT * SIZE, '\0');
+    allocateMatrix(&local_factors, MAX_FACTORS_SIZE, MAX_CF_LENGHT, '\0');
 
     i = 0;
     for (auto elem : factors){
@@ -265,10 +265,10 @@ int main() {
     // Populate global factors variable
     char **global_factors_nn;
 
-    allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE, MAX_CF_LENGHT * SIZE, '\0');
+    allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE, MAX_CF_LENGHT, '\0');
 
-    MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0],
-                  MAX_FACTORS_SIZE * SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
+    MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0],
+                  MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
 
     // Create map to join all the local factors in a single one
     map<string, int> global_factors;

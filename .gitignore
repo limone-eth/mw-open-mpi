@@ -7,4 +7,5 @@ files/NYPD_Motor_Vehicle_Collisions.csv
 CMakeCache.txt
 /CMakeFiles
 CMakeFiles
+CMakeFiles/*
 mw-open-mpi-exec

@@ -117,13 +117,12 @@ int main() {
     allocateMatrix<char>(&car_accidents, ROWS, MAX_LINE_LENGHT, '\0');
     allocateMatrix<char>(&scattered_car_accidents, ROWS_PER_PROCESS, MAX_LINE_LENGHT, '\0');
 
-    string data(CSV_FILE);
-
-    ifstream in(data.c_str());
-    if (!in.is_open()) return 1;
-
-
     if (PROCESS_RANK == 0) {
+        string data(CSV_FILE);
+
+        ifstream in(data.c_str());
+        if (!in.is_open()) return 1;
+
         // LOADING DATASET
         string line;
         ifstream fin(CSV_FILE, ios::in);

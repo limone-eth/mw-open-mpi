@@ -27,7 +27,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define COLUMNS 29
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
-#define PRINT_RESULTS false
+#define PRINT_RESULTS true
 #define NUM_YEARS 5
 #define STARTING_YEAR 2012
 #define WEEKS 52
@@ -448,12 +448,12 @@ int main() {
         for (const auto &b: global_boroughs) {
             cout << "BOROUGH: " << b.first << " (Lethal Accidents: "
                  << global_lethal_accidents_per_borough[global_boroughs[b.first]] << ", Average: "
-                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double) global_accidents_per_borough_per_week[global_boroughs[b.first]] << ")"
+                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]]) / (WEEKS*NUM_YEARS) << ")"
                  << endl;
             for (w = 0; w < WEEKS*NUM_YEARS; ++w) {
                 cout << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS <<
                 ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]  <<
-                ((double)global_accidents_per_borough_per_week[global_boroughs[b.first]][w] / (double) global_accidents_per_borough_per_week[global_boroughs[b.first]] << endl;
+                 endl;
             }
         }
         cout << endl;
@@ -487,8 +487,8 @@ int main() {
             global_pi[i] -= global_pi[i - 1];
 
         cout << "#############" << endl;
-        cout << "| SIZE: " << SIZE;
-        cout << "| THREADS: " << threads;
+        cout << "| SIZE: " << SIZE << endl;
+        cout << "| THREADS: " << threads << endl;
         cout << "| Phase 1 (Read file): " << std::setprecision(5) << fixed << global_pi[0] << endl;
         cout << "| Phase 2 (Scatter and parse data): " << std::setprecision(5) << fixed << global_pi[1] << endl;
         cout << "| Phase 3 (Query 1): " << std::setprecision(5) << fixed << global_pi[2] << endl;

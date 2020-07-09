@@ -487,15 +487,15 @@ int main() {
             global_pi[i] -= global_pi[i - 1];
 
         cout << "#############" << endl;
-        cout << "SIZE: " << SIZE;
-        cout << "THREADS: " << threads;
-        cout << "Phase 1 (Read file): " << std::setprecision(5) << fixed << global_pi[0] << endl;
-        cout << "Phase 2 (Scatter and parse data): " << std::setprecision(5) << fixed << global_pi[1] << endl;
-        cout << "Phase 3 (Query 1): " << std::setprecision(5) << fixed << global_pi[2] << endl;
-        cout << "Phase 4 (Query 2): " << std::setprecision(5) << fixed << global_pi[3] << endl;
-        cout << "Phase 5 (Query 3): " << std::setprecision(5) << fixed << global_pi[4] << endl;
-        cout << "GLOBAL EXECUTION TIME: " << global_end - global_start << endl;
-
+        cout << "| SIZE: " << SIZE;
+        cout << "| THREADS: " << threads;
+        cout << "| Phase 1 (Read file): " << std::setprecision(5) << fixed << global_pi[0] << endl;
+        cout << "| Phase 2 (Scatter and parse data): " << std::setprecision(5) << fixed << global_pi[1] << endl;
+        cout << "| Phase 3 (Query 1): " << std::setprecision(5) << fixed << global_pi[2] << endl;
+        cout << "| Phase 4 (Query 2): " << std::setprecision(5) << fixed << global_pi[3] << endl;
+        cout << "| Phase 5 (Query 3): " << std::setprecision(5) << fixed << global_pi[4] << endl;
+        cout << "| GLOBAL EXECUTION TIME: " << global_end - global_start << endl;
+        cout << "#############" << endl;
     }
 
     MPI_Barrier(MPI_COMM_WORLD);

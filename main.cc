@@ -61,8 +61,8 @@ int get_week(std::string date) {
     std::tm d = {};
     if (!split.empty()) {
         try {
-            d.tm_year = stoi(split[2]);
-            d.tm_mon = stoi(split[0]);
+            d.tm_year = stoi(split[2]) - 1900;
+            d.tm_mon = stoi(split[0]) - 1;
             d.tm_mday = stoi(split[1]);
         } catch (int e) {
             cout << "ERROR DATE" << endl;
@@ -181,7 +181,7 @@ int main() {
     // Query 1 start
     local_performance[3] = MPI_Wtime();
 
-    const int WEEKS = 51;
+    const int WEEKS = 52;
 
     int *local_lethal_accidents_per_week = new int[WEEKS]{0}; // initializing array with all 0s
     vector<int> global_lethal_accidents_per_week(WEEKS, 0);
@@ -200,7 +200,7 @@ int main() {
         w = get_week(local_current_date);
 
         // if num of persons killed > 0
-        if (local_dataset[i][11] != "0") {
+        if (local_dataset[i][12] != "0") {
             local_lethal_accidents_per_week[w] += 1;
         }
 
@@ -233,7 +233,7 @@ int main() {
     // storing local factors
     set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
-        for (int j = 18; j < 23; j++) {
+        for (int j = 19; j < 24; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1){
                 // cout << process_name << " - " << local_dataset[i][j] << endl;
                 factors.insert(local_dataset[i][j]);
@@ -303,7 +303,7 @@ int main() {
                 //cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl;
                 local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                 local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
-                        local_dataset[i][11] != "0" ? 1 : 0;
+                        local_dataset[i][12] != "0" ? 1 : 0;
                 already_processed_factors.insert(local_dataset[i][j]);
             }
         }
@@ -417,7 +417,7 @@ int main() {
 
             // if is lethal, we add 1 otherwise 0
             local_lethal_accidents_per_borough[global_boroughs[local_dataset[i][2]]] +=
-                    local_dataset[i][11] != "0" ? 1 : 0;
+                    local_dataset[i][12] != "0" ? 1 : 0;
             w = get_week(local_current_date);
 #pragma omp atomic
             local_accidents_per_borough_per_week[global_boroughs[local_dataset[i][2]]][w]++;

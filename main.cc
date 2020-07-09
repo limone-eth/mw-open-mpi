@@ -448,10 +448,12 @@ int main() {
         for (const auto &b: global_boroughs) {
             cout << "BOROUGH: " << b.first << " (Lethal Accidents: "
                  << global_lethal_accidents_per_borough[global_boroughs[b.first]] << ", Average: "
-                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double) WEEKS*NUM_YEARS) << ")"
+                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double) global_accidents_per_borough_per_week[global_boroughs[b.first]] << ")"
                  << endl;
             for (w = 0; w < WEEKS*NUM_YEARS; ++w) {
-                cout << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS << ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]<< endl;
+                cout << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS <<
+                ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]  <<
+                ((double)global_accidents_per_borough_per_week[global_boroughs[b.first]][w] / (double) global_accidents_per_borough_per_week[global_boroughs[b.first]] << endl;
             }
         }
         cout << endl;
@@ -484,16 +486,17 @@ int main() {
         for (i = 4; i > 0; --i)
             global_pi[i] -= global_pi[i - 1];
 
+        cout << "#############" << endl;
+        cout << "SIZE: " << SIZE;
+        cout << "THREADS: " << threads;
+        cout << "Phase 1 (Read file): " << std::setprecision(5) << fixed << global_pi[0] << endl;
+        cout << "Phase 2 (Scatter and parse data): " << std::setprecision(5) << fixed << global_pi[1] << endl;
+        cout << "Phase 3 (Query 1): " << std::setprecision(5) << fixed << global_pi[2] << endl;
+        cout << "Phase 4 (Query 2): " << std::setprecision(5) << fixed << global_pi[3] << endl;
+        cout << "Phase 5 (Query 3): " << std::setprecision(5) << fixed << global_pi[4] << endl;
+        cout << "GLOBAL EXECUTION TIME: " << global_end - global_start << endl;
 
-        // Printing performance indicators as array object
-        cout << "[" << process_name << ", " << SIZE << ", " << threads << ", ";
-
-        for (i = 0; i < 5; ++i)
-            cout << std::setprecision(5) << fixed << global_pi[i] << ", ";
-
-        cout << global_end - global_start << "]" << endl;
     }
-    // cout << process_name << " - MPI_Finalize()" << endl;
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();

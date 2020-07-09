@@ -28,6 +28,9 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
 #define PRINT_RESULTS true
+#define NUM_YEARS 5
+#define STARTING_YEAR 2012
+#define WEEKS 52
 
 void normalize(string *str_line);
 
@@ -59,11 +62,13 @@ int get_week(std::string date) {
         s.erase(0, pos + delimiter.length());
     }
     std::tm d = {};
+    int add_year = 0;
     if (!split.empty()) {
         try {
             d.tm_year = stoi(split[2]) - 1900;
             d.tm_mon = stoi(split[0]) - 1;
             d.tm_mday = stoi(split[1]);
+            add_year = d.tm_year - 2012;
         } catch (int e) {
             cout << "ERROR DATE" << endl;
             throw e;
@@ -71,7 +76,7 @@ int get_week(std::string date) {
 
     }
     std::mktime(&d);
-    return (d.tm_yday - d.tm_wday + 7) / 7;
+    return (d.tm_yday - d.tm_wday + 7) / 7 + 51 * add_year;
 }
 
 int main() {
@@ -181,18 +186,18 @@ int main() {
     // Query 1 start
     local_performance[3] = MPI_Wtime();
 
-    const int WEEKS = 52;
 
-    int *local_lethal_accidents_per_week = new int[WEEKS]{0}; // initializing array with all 0s
-    vector<int> global_lethal_accidents_per_week(WEEKS, 0);
+    int *local_lethal_accidents_per_week = new int[WEEKS*NUM_YEARS]{0}; // initializing array with all 0s
+    vector<int> global_lethal_accidents_per_week(WEEKS*NUM_YEARS, 0);
     std::string local_current_date;
     int threads = omp_get_max_threads();
     omp_set_num_threads(threads);
 
     int w;
+    int l = WEEKS*NUM_YEARS
 
     // Compute number of lethal accidents per week
-#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:WEEKS])
+#pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:l])
     for (i = 0; i < ROWS_PER_PROCESS; ++i) {
         local_current_date = local_dataset[i][0];
 
@@ -206,7 +211,7 @@ int main() {
 
     }
 
-    MPI_Reduce(&local_lethal_accidents_per_week[0], &global_lethal_accidents_per_week[0], WEEKS, MPI_INT, MPI_SUM, 0,
+    MPI_Reduce(&local_lethal_accidents_per_week[0], &global_lethal_accidents_per_week[0], WEEKS*NUM_YEARS, MPI_INT, MPI_SUM, 0,
                MPI_COMM_WORLD);
 
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
@@ -214,8 +219,8 @@ int main() {
 
         cout << "LETHAL ACCIDENTS PER WEEK" << endl;
 
-        for (i = 0; i < WEEKS; ++i) {
-            cout << "---- Week " << i << ": " << global_lethal_accidents_per_week[i] << endl;
+        for (i = 0; i < WEEKS*NUM_YEARS; ++i) {
+            cout << "-- Year: " << i / WEEKS + STARTING_YEAR  << "-- Week " << i % WEEKS << ": " << global_lethal_accidents_per_week[i] << endl;
         }
         cout << endl;
     }

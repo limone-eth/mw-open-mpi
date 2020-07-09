@@ -27,7 +27,7 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 #define COLUMNS 29
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
-#define PRINT_RESULTS true
+#define PRINT_RESULTS false
 #define NUM_YEARS 5
 #define STARTING_YEAR 2012
 #define WEEKS 52
@@ -68,7 +68,7 @@ int get_week(std::string date) {
             d.tm_year = stoi(split[2]) - 1900;
             d.tm_mon = stoi(split[0]) - 1;
             d.tm_mday = stoi(split[1]);
-            add_year = d.tm_year - 2012;
+            add_year = stoi(split[2]) - 2012;
         } catch (int e) {
             cout << "ERROR DATE" << endl;
             throw e;
@@ -76,7 +76,7 @@ int get_week(std::string date) {
 
     }
     std::mktime(&d);
-    return (d.tm_yday - d.tm_wday + 7) / 7 + 51 * add_year;
+    return (d.tm_yday - d.tm_wday + 7) / 7 + WEEKS * add_year;
 }
 
 int main() {
@@ -194,7 +194,7 @@ int main() {
     omp_set_num_threads(threads);
 
     int w;
-    int l = WEEKS*NUM_YEARS
+    int l = WEEKS*NUM_YEARS;
 
     // Compute number of lethal accidents per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:l])
@@ -238,7 +238,7 @@ int main() {
     // storing local factors
     set<string> factors;
     for (i = 0; i < ROWS_PER_PROCESS; i++) {
-        for (int j = 19; j < 24; j++) {
+        for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1){
                 // cout << process_name << " - " << local_dataset[i][j] << endl;
                 factors.insert(local_dataset[i][j]);
@@ -404,10 +404,10 @@ int main() {
     int *local_lethal_accidents_per_borough = new int[global_boroughs.size()]{0};
     int **local_accidents_per_borough_per_week;
 
-    allocateMatrix(&local_accidents_per_borough_per_week, global_boroughs.size(), WEEKS, 0);
+    allocateMatrix(&local_accidents_per_borough_per_week, global_boroughs.size(), WEEKS * NUM_YEARS, 0);
 
     for (i = 0; i < global_boroughs.size(); i++) {
-        for (int j = 0; j < WEEKS; j++) {
+        for (int j = 0; j < WEEKS * NUM_YEARS; j++) {
             local_accidents_per_borough_per_week[i][j] = 0;
         }
     }
@@ -431,14 +431,14 @@ int main() {
 
 
     vector<int> global_lethal_accidents_per_borough(global_boroughs.size(), 0);
-    vector<vector<int>> global_accidents_per_borough_per_week(global_boroughs.size(), vector<int>(WEEKS, 0));
+    vector<vector<int>> global_accidents_per_borough_per_week(global_boroughs.size(), vector<int>(WEEKS*NUM_YEARS, 0));
 
     MPI_Reduce(&local_lethal_accidents_per_borough[0], &global_lethal_accidents_per_borough[0], global_boroughs.size(),
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     for (const auto &b : global_boroughs)
         MPI_Reduce(&local_accidents_per_borough_per_week[b.second][0],
-                   &global_accidents_per_borough_per_week[b.second][0], WEEKS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+                   &global_accidents_per_borough_per_week[b.second][0], WEEKS*NUM_YEARS, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     //Query3 end
 
     local_performance[5] = MPI_Wtime();
@@ -448,11 +448,10 @@ int main() {
         for (const auto &b: global_boroughs) {
             cout << "BOROUGH: " << b.first << " (Lethal Accidents: "
                  << global_lethal_accidents_per_borough[global_boroughs[b.first]] << ", Average: "
-                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double) WEEKS) << ")"
+                 << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]] / (double) WEEKS*NUM_YEARS) << ")"
                  << endl;
-            for (w = 0; w < WEEKS; ++w) {
-                cout << "---- Week " << w << ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]
-                     << endl;
+            for (w = 0; w < WEEKS*NUM_YEARS; ++w) {
+                cout << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS << ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]<< endl;
             }
         }
         cout << endl;

@@ -24,7 +24,7 @@ int NUM_THREADS = 4;
 string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 #define ROWS 955928
-#define COLUMNS 29
+#define COLUMNS 28
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
 #define PRINT_RESULTS true

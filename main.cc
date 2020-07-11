@@ -21,14 +21,14 @@ using namespace std;
 using namespace boost::gregorian;
 
 int NUM_THREADS = 4;
-string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
+string CSV_FILE = "./files/NYPD_Motor_Vehicle_CollisionsNO7.csv";
 
 #define ROWS 955928
 #define COLUMNS 29
 #define MAX_CF_LENGHT 200
 #define MAX_LINE_LENGHT 500
 #define PRINT_RESULTS true
-#define NUM_YEARS 5
+#define NUM_YEARS 6
 #define STARTING_YEAR 2012
 #define WEEKS 52
 
@@ -83,6 +83,9 @@ int main() {
     using namespace std;
     // using namespace std::chrono;
 
+    ofstream myfile;
+    myfile.open ("./files/results.txt");
+
     int PROCESS_RANK;
     int SIZE;
     int THREAD_SUPPORT;
@@ -133,7 +136,7 @@ int main() {
         ifstream fin(CSV_FILE, ios::in);
         getline(fin, line); // reading header
 
-        for (int i = 0; i < ROWS; ++i) {
+        for (int i = 0; i < ROWS; i++) {
             getline(fin, line);
             line.copy(car_accidents[i], line.size() + 1);
         }
@@ -162,7 +165,7 @@ int main() {
     for (auto &l : local_dataset) {
         stream.str(scattered_car_accidents[i]);
 
-        for (int j = 0; j < COLUMNS; ++j) {
+        for (int j = 0; j < COLUMNS; j++) {
             getline(stream, column, ',');
             l[j] = column;
         }
@@ -198,14 +201,14 @@ int main() {
 
     // Compute number of lethal accidents per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+:local_lethal_accidents_per_week[:l])
-    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+    for (i = 0; i < ROWS_PER_PROCESS; i++) {
         local_current_date = local_dataset[i][0];
 
         // get week number from date
         w = get_week(local_current_date);
 
         // if num of persons killed > 0
-        if (local_dataset[i][12] != "0") {
+        if (local_dataset[i][11] != "0") {
             local_lethal_accidents_per_week[w] += 1;
         }
 
@@ -215,16 +218,15 @@ int main() {
                MPI_COMM_WORLD);
 
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
-        cout << "QUERY 1 completed -> " << MPI_Wtime() << endl;
+        myfile << "QUERY 1 completed -> " << MPI_Wtime() << endl;
 
-        cout << "LETHAL ACCIDENTS PER WEEK" << endl;
+        myfile << "LETHAL ACCIDENTS PER WEEK" << endl;
 
-        for (i = 0; i < WEEKS*NUM_YEARS; ++i) {
-            cout << "-- Year: " << i / WEEKS + STARTING_YEAR  << "-- Week " << i % WEEKS << ": " << global_lethal_accidents_per_week[i] << endl;
+        for (i = 0; i < WEEKS*NUM_YEARS; i++) {
+            myfile << "-- Year: " << i / WEEKS + STARTING_YEAR  << "-- Week " << i % WEEKS << ": " << global_lethal_accidents_per_week[i] << endl;
         }
-        cout << endl;
+        myfile << endl;
     }
-
     /*
      * @@@@@@@@
      *
@@ -305,16 +307,15 @@ int main() {
         for (int j = 18; j < 23; j++) {
             if (!local_dataset[i][j].empty() && local_dataset[i][j].length() > 1
             && !already_processed_factors.count(local_dataset[i][j])) {
-                //cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl;
+                //cout << process_name << " - " << global_factors[local_dataset[i][j]] << " | " << local_dataset[i][j] << endl; 
                 local_accidents_per_factor[global_factors[local_dataset[i][j]]]++;
                 local_lethal_accidents_per_factor[global_factors[local_dataset[i][j]]] +=
-                        local_dataset[i][12] != "0" ? 1 : 0;
+                        local_dataset[i][11] != "0" ? 1 : 0;
                 already_processed_factors.insert(local_dataset[i][j]);
             }
         }
         already_processed_factors.clear();
     }
-
     vector<int> global_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
     vector<int> global_lethal_accidents_per_factor(GLOBAL_FACTORS_SIZE, 0);
 
@@ -324,19 +325,19 @@ int main() {
 
     MPI_Reduce(&local_lethal_accidents_per_factor[0], &global_lethal_accidents_per_factor[0], GLOBAL_FACTORS_SIZE,
                MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-
+    
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
-        cout << "QUERY 2 completed -> " << MPI_Wtime() << endl;
+        myfile << "QUERY 2 completed -> " << MPI_Wtime() << endl;
 
-        cout << "ACCIDENTS AND PERCENTAGE OF L/NL ACCIDENTS PER CONTRIBUTING FACTOR" << endl;
+        myfile << "ACCIDENTS AND PERCENTAGE OF L/NL ACCIDENTS PER CONTRIBUTING FACTOR" << endl;
 
         for (const auto &f: global_factors)
-            cout << "-- FACTOR: " << f.first << ", " << global_accidents_per_factor[f.second] << ", "
+            myfile << "-- FACTOR: " << f.first << ", " << global_accidents_per_factor[f.second] << ", "
                  << global_lethal_accidents_per_factor[f.second] << ", " << 100 *
                                                                             ((double) global_lethal_accidents_per_factor[f.second] /
                                                                              (double) global_accidents_per_factor[f.second])
                  << "%" << endl;
-        cout << endl;
+        myfile << endl;
     }
 
     freeMatrix(&local_factors);
@@ -357,7 +358,7 @@ int main() {
 
     // storing local boroughs
     vector<string> boroughs;
-    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+    for (i = 0; i < ROWS_PER_PROCESS; i++) {
         if (!is_in_array(local_dataset[i][2], boroughs) && !local_dataset[i][2].empty()) {
             boroughs.push_back(local_dataset[i][2]);
         }
@@ -373,7 +374,7 @@ int main() {
 
     allocateMatrix(&local_boroughs, MAX_BOROUGHS_SIZE, MAX_CF_LENGHT, '\0');
 
-    for (i = 0; i < LOCAL_BOROUGHS_SIZE; ++i)
+    for (i = 0; i < LOCAL_BOROUGHS_SIZE; i++)
         boroughs[i].copy(local_boroughs[i], boroughs[i].length() + 1);
 
     boroughs.clear();
@@ -387,7 +388,7 @@ int main() {
                   MAX_BOROUGHS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
 
     map<string, int> global_boroughs;
-    for (i = 0; i < MAX_BOROUGHS_SIZE * SIZE; ++i) {
+    for (i = 0; i < MAX_BOROUGHS_SIZE * SIZE; i++) {
         if ((global_boroughs.find(global_boroughs_nn[i]) == global_boroughs.end()) && strlen(global_boroughs_nn[i])) {
             global_boroughs[global_boroughs_nn[i]] = 0;
         }
@@ -414,7 +415,7 @@ int main() {
 
     // Compute number of lethal accidents per borough & accidents per borough per week
 #pragma omp parallel for default(shared) private(i, w, local_current_date) reduction(+: local_lethal_accidents_per_borough[:global_boroughs.size()])
-    for (i = 0; i < ROWS_PER_PROCESS; ++i) {
+    for (i = 0; i < ROWS_PER_PROCESS; i++) {
 
         // check if borough column is not empty
         if (!local_dataset[i][2].empty()) {
@@ -422,7 +423,7 @@ int main() {
 
             // if is lethal, we add 1 otherwise 0
             local_lethal_accidents_per_borough[global_boroughs[local_dataset[i][2]]] +=
-                    local_dataset[i][12] != "0" ? 1 : 0;
+                    local_dataset[i][11] > "0" ? 1 : 0;
             w = get_week(local_current_date);
 #pragma omp atomic
             local_accidents_per_borough_per_week[global_boroughs[local_dataset[i][2]]][w]++;
@@ -443,20 +444,20 @@ int main() {
 
     local_performance[5] = MPI_Wtime();
     if (PROCESS_RANK == 0 && PRINT_RESULTS == true) {
-        cout << "QUERY 3 completed -> " << MPI_Wtime() << endl;
+        myfile << "QUERY 3 completed -> " << MPI_Wtime() << endl;
 
         for (const auto &b: global_boroughs) {
-            cout << "BOROUGH: " << b.first << " (Lethal Accidents: "
+            myfile << "BOROUGH: " << b.first << " (Lethal Accidents: "
                  << global_lethal_accidents_per_borough[global_boroughs[b.first]] << ", Average: "
                  << ((double) global_lethal_accidents_per_borough[global_boroughs[b.first]]) / (WEEKS*NUM_YEARS) << ")"
                  << endl;
-            for (w = 0; w < WEEKS*NUM_YEARS; ++w) {
-                cout << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS <<
+            for (w = 0; w < WEEKS*NUM_YEARS; w++) {
+                myfile << "-- Year: " << w / WEEKS + STARTING_YEAR << "---- Week " << w % WEEKS <<
                 ": " << global_accidents_per_borough_per_week[global_boroughs[b.first]][w]  <<
                  endl;
             }
         }
-        cout << endl;
+        myfile << endl;
     }
 
     freeMatrix(&local_boroughs);
@@ -476,11 +477,11 @@ int main() {
     MPI_Reduce(&local_timer_end, &global_end, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     MPI_Reduce(&local_performance[0], &global_pi[0], 5, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    cout << process_name << " - Printing results..." << endl;
+    //myfile << process_name << " - Printing results..." << endl;
     if (PROCESS_RANK == 0) {
         cout << "Execution time: " << global_end - global_start << " s\n" << endl;
 
-        for (i = 0; i < 5; ++i)
+        for (i = 0; i < 5; i++)
             global_pi[i] -= global_start;
 
         for (i = 4; i > 0; --i)
@@ -497,7 +498,7 @@ int main() {
         cout << "| GLOBAL EXECUTION TIME: " << global_end - global_start << endl;
         cout << "#############" << endl;
     }
-
+    myfile.close();
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
     //cout << process_name << " - Finalized" << endl;
@@ -522,7 +523,7 @@ int allocateMatrix(T ***data, int rows, int columns, T value) {
     }
 
     // Set up pointers into contiguous memory
-    for (int i = 0; i < rows; ++i)
+    for (int i = 0; i < rows; i++)
         (*data)[i] = &(p[i * columns]);
 
     return 0;

@@ -32,6 +32,8 @@ string CSV_FILE = "./files/NYPD_Motor_Vehicle_CollisionsNO7.csv";
 #define STARTING_YEAR 2012
 #define WEEKS 52
 
+string header;
+
 void normalize(string *str_line);
 
 template<typename T>
@@ -135,14 +137,14 @@ int main() {
         string line;
         ifstream fin(CSV_FILE, ios::in);
         getline(fin, line); // reading header
-
+        header = line;
+        
         for (int i = 0; i < ROWS; i++) {
             getline(fin, line);
             line.copy(car_accidents[i], line.size() + 1);
         }
         fin.close();
     }
-
     // File reading ends here, get time
     local_performance[0] = MPI_Wtime();
 

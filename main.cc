@@ -21,7 +21,7 @@ using namespace std;
 using namespace boost::gregorian;
 
 int NUM_THREADS = 4;
-string CSV_FILE = "./files/NYPD_Motor_Vehicle_CollisionsNO7.csv";
+string CSV_FILE = "./files/NYPD_Motor_Vehicle_Collisions.csv";
 
 #define ROWS 955928
 #define COLUMNS 29

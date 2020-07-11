@@ -87,6 +87,8 @@ int main() {
 
     ofstream myfile;
     myfile.open ("./files/results.txt");
+    if(!myfile.is_open() && PRINT_RESULTS)
+        return 1;
 
     int PROCESS_RANK;
     int SIZE;

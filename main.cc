@@ -278,12 +278,11 @@ int main() {
 
     allocateMatrix(&global_factors_nn, MAX_FACTORS_SIZE * SIZE, MAX_CF_LENGHT, '\0');
 
-    MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0],
-                  MAX_FACTORS_SIZE * SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
+    MPI_Allgather(&local_factors[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, &global_factors_nn[0][0], MAX_FACTORS_SIZE * MAX_CF_LENGHT, MPI_CHAR, MPI_COMM_WORLD);
 
     // Create map to join all the local factors in a single one
     map<string, int> global_factors;
-
+    
     for (i = 0; i < MAX_FACTORS_SIZE * SIZE; i++) {
         if ((global_factors.find(global_factors_nn[i]) == global_factors.end()) && strlen(global_factors_nn[i])) {
             global_factors[global_factors_nn[i]] = 0;
